@@ -1,703 +1,600 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>New York City Roleplay | Staff Hub</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --primary-color: #2563eb;
-      --accent-color: #1e3a8a;
-      --light-bg: #f3f4f6;
-      --dark-bg: #1f2937;
-      --light-text: #1f2937;
-      --dark-text: #f9fafb;
-      --font-main: 'Inter', sans-serif;
-    }
+<meta charset="UTF-8">
+<title>NYCRP Staff Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    body {
-      font-family: var(--font-main);
-      margin: 0;
-      background-color: var(--light-bg);
-      color: var(--light-text);
-      transition: background 0.3s, color 0.3s;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
 
-    body.dark {
-      background-color: var(--dark-bg);
-      color: var(--dark-text);
-    }
+<style>
+* { box-sizing: border-box; }
 
-    header {
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(circle at top, #1a1d23, #0a0c10);
+  color: #e5e7eb;
+  height: 100vh;
+  display: flex;
+}
+.bg-container {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  aspect-ratio: 3 / 1;
-  height: 80;
-  background-image: url('https://cdn.discordapp.com/attachments/1404148307181174997/1424913025672024214/New_Project.png?ex=68e5ad2a&is=68e45baa&hm=804d3eb6b9084342fc3d78810c46ef48b734bf89dc8f9d2f0fccc1d3b098c654&');
-  background-size: contain;
-  background-repeat: no-repeat;
+  height: 100%;
+  background-size: cover;
   background-position: center;
-  background-color: #000; /* fallback background if image doesn't cover */
+  filter: blur(10px) brightness(0.45);
+  transition: opacity 1s ease-in-out;  /* smooth fading */
+  z-index: 0;
+  opacity: 1;
+}
+
+.sidebar,
+.main,
+.panel {
+  position: relative;   /* allow z-index to work */
+  z-index: 1;           /* above the background */
 }
 
 
-    .theme-toggle {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      padding: 8px 12px;
-      background: var(--primary-color);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      z-index: 1000;
-    }
+/* ===== Sidebar ===== */
+.sidebar {
+  width: 270px;
+  background: rgba(15,17,22,0.95);
+  border-right: 1px solid rgba(255,255,255,0.05);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
 
-    nav {
-      background: white;
-      display: flex;
-      justify-content: center;
-      border-bottom: 2px solid #e5e7eb;
-      flex-wrap: wrap;
-    }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
 
-    body.dark nav {
-      background: #111827;
-      border-bottom-color: #374151;
-    }
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 
-    nav button {
-      background: none;
-      border: none;
-      padding: 16px 24px;
-      cursor: pointer;
-      font-size: 1rem;
-      font-weight: 600;
-      border-bottom: 3px solid transparent;
-      color: inherit;
-    }
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: #cfd3da;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
 
-    nav button.active {
-      border-bottom: 3px solid var(--primary-color);
-      color: var(--primary-color);
-    }
+.nav-item:hover,
+.nav-item.active {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+}
 
-    main {
-      max-width: 1000px;
-      margin: 40px auto;
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.07);
-    }
+/* ===== Main ===== */
+.main {
+  flex: 1;
+  padding: 26px;
+  overflow-y: auto;
+}
 
-    body.dark main {
-      background: #1f2937;
-    }
+.panel {
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.08),
+    rgba(255,255,255,0.03)
+  );
+  border-radius: 16px;
+  padding: 22px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
 
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    .staff-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 30px;
-      margin-top: 20px;
-      margin-bottom: 40px;
-    }
-
-    .staff-card {
-      text-align: center;
-      padding: 20px;
-      background-color: var(--light-bg);
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .staff-card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    }
-
-    .staff-card img {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 4px solid var(--primary-color);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-    }
-
-    .staff-name {
-      margin-top: 12px;
-      font-weight: 700;
-      font-size: 1.05rem;
-      color: var(--light-text);
-    }
-
-    .staff-role {
-      font-size: 0.9rem;
-      color: gray;
-    }
-
-    body.dark .staff-name,
-    body.dark .staff-role {
-      color: var(--dark-text);
-    }
-
-    .section-header {
-      font-size: 1.4rem;
-      font-weight: 700;
-      margin-top: 40px;
-      margin-bottom: 15px;
-      border-bottom: 2px solid var(--primary-color);
-      padding-bottom: 6px;
-      color: var(--primary-color);
-    }
-
-    .collapsible {
-      background-color: var(--primary-color);
-      color: white;
-      cursor: pointer;
-      padding: 12px 18px;
-      width: 100%;
-      border: none;
-      text-align: left;
-      outline: none;
-      font-size: 16px;
-      margin-top: 10px;
-      border-radius: 6px;
-      transition: background-color 0.2s ease;
-    }
-
-    .collapsible:hover {
-      background-color: #1d4ed8;
-    }
-
-   .content {
-  padding: 0 18px;
-  max-height: 0;
+/* ===== Dropdown Sections ===== */
+.section {
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  margin-bottom: 14px;
   overflow: hidden;
-  background-color: var(--light-bg);
-  margin-top: 5px;
-  border-radius: 6px;
-  transition: max-height 0.3s ease;
 }
 
+.section-header {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-weight: 600;
+}
 
-    body.dark .content {
-      background-color: #374151;
-      color: var(--dark-text);
-    }
+.section-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-    .content ul {
-      padding-left: 20px;
-      margin: 10px 0;
-    }
+.chevron {
+  transition: transform 0.3s ease;
+}
 
-    .custom-numbered-list {
-      counter-reset: item;
-      list-style: none;
-      padding-left: 0;
-      max-width: 700px;
-      margin: 0 auto;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #333;
-    }
+.section.open .chevron {
+  transform: rotate(180deg);
+}
 
-    .custom-numbered-list li {
-      counter-increment: item;
-      margin: 12px 0;
-      padding-left: 40px;
-      position: relative;
-      line-height: 1.5em;
-      transition: background-color 0.3s ease;
-      border-radius: 6px;
-    }
+.section-content {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.45s ease, opacity 0.3s ease;
+  padding: 0 18px;
+}
 
-    .custom-numbered-list li::before {
-      content: counter(item) ".";
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-weight: 700;
-      color: #0078d7;
-      font-size: 1.2em;
-    }
+.section.open .section-content {
+  max-height: 2000px;
+  opacity: 1;
+  padding-bottom: 16px;
+}
 
-    .custom-numbered-list li:hover {
-      background-color: #e6f0ff;
-    }
-  </style>
+.section-content ul {
+  padding-left: 18px;
+}
+
+.section-content li {
+  margin-bottom: 8px;
+  line-height: 1.55;
+  color: #d1d5db;
+}
+</style>
 </head>
 
 <body>
-  <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
-  <header></header>
+<div class="bg-container"></div>
 
-  <nav>
-    <button class="tab-button active" data-tab="welcome">Welcome</button>
-    <button class="tab-button" data-tab="team">Staff Team</button>
-    <button class="tab-button" data-tab="roles">Chain of Command</button>
-    <button class="tab-button" data-tab="conduct">Staff Regulation and Conduct</button>
-    <button class="tab-button" data-tab="resources">Resources</button>
-  </nav>
 
-  <main>
-    <section id="welcome" class="tab-content active">
-      <h2>Welcome</h2>
-      <p>Welcome to the New York City Roleplay Staff Hub! Listed above you can find information ranging from the Chain of Command to guides you should follow to be the perfect moderator. </p>
-       <p>Take the time to read through each section carefully to ensure you’re up to date with our procedures and expectations. Remember, as staff, you represent NYCRP — strive to lead by example, handle situations with respect, and always aim to create a positive and enjoyable experience for everyone.</p>
-    </section>
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="brand">
+    <i data-lucide="shield"></i>
+    <span>NYCRP Staff Dashboard</span>
+  </div>
 
-    <section id="team" class="tab-content">
-      <h2>Staff Team</h2>
-            <div class="section-header">Leadership</div>
-      <div class="staff-grid">
-        <div class="staff-card">
-          <img src="https://cdn.discordapp.com/avatars/1178123820620587176/c4f3d9d623557d1b7529f70689bb4f60.png?size=512" />
-          <div class="staff-name">Tyler</div>
-          <div class="staff-role">Founder</div>
-        </div>
-        <div class="staff-card">
-          <img src="https://cdn.discordapp.com/avatars/1143019332947951657/f043273b4aac15a4a76d830f129fc976.png?size=4096" />
-          <div class="staff-name">Alex</div>
-          <div class="staff-role">Co Founder</div>
-        </div>
-        <div class="staff-card">
-          <img src="https://cdn.discordapp.com/avatars/1287217991611584603/290036464bf807531a697a39ae4c490d.png?size=4096" />
-          <div class="staff-name">Ace</div>
-          <div class="staff-role">Co Founder</div>
-        </div>
-        <div class="staff-card">
-          <img src="https://cdn.discordapp.com/avatars/1270436213198684242/baa8187f57979991d38812e415d41191.png?size=4096" />
-          <div class="staff-name">Rylen</div>
-          <div class="staff-role">Chairman</div>
-        </div>
-      </div>
-
-      <div class="section-header">Board of Directors</div>
-      <div class="staff-grid">
-        <div class="staff-card">
-          <img src="https://cdn.discordapp.com/attachments/1404148307181174997/1424869174588735609/IMG_2422.webp?ex=68e58454&is=68e432d4&hm=ed44468ab90047749a3261dafcba3837783ad980f10c794461cd8093326ed5dd&" />
-          <div class="staff-name">Unknown</div>
-          <div class="staff-role">Director</div>
-        </div>
-        <div class="staff-card">
-          <img src="https://cdn.discordapp.com/attachments/1404148307181174997/1424869174588735609/IMG_2422.webp?ex=68e58454&is=68e432d4&hm=ed44468ab90047749a3261dafcba3837783ad980f10c794461cd8093326ed5dd&" />
-          <div class="staff-name">Unknown</div>
-          <div class="staff-role">Deputy Director</div>
-        </div>
-        <div class="staff-card">
-          <img src="https://cdn.discordapp.com/attachments/1404148307181174997/1424869174588735609/IMG_2422.webp?ex=68e58454&is=68e432d4&hm=ed44468ab90047749a3261dafcba3837783ad980f10c794461cd8093326ed5dd&" />
-          <div class="staff-name">Unknown</div>
-          <div class="staff-role">Deputy Director</div>
-        </div>
-        <div class="staff-card">
-          <img src="https://cdn.discordapp.com/avatars/758406806375759892/613a51112b11d64e5c7f2b2be24e9c05.png?size=4096" />
-          <div class="staff-name">Domadanger (Dom)</div>
-          <div class="staff-role">Assistant Director</div>
-        </div>
-      </div>
-
-      <div class="section-header">Community Management</div>
-      <div class="staff-grid">
-        <div class="staff-card">
-          <img src="https://cdn.discordapp.com/attachments/1404148307181174997/1424869174588735609/IMG_2422.webp?ex=68e58454&is=68e432d4&hm=ed44468ab90047749a3261dafcba3837783ad980f10c794461cd8093326ed5dd&" />
-          <div class="staff-name">Unknown</div>
-          <div class="staff-role">Community Management</div>
-        </div>
-      </div>
-
-      <div class="section-header">Senior Management</div>
-      <div class="staff-grid">
-        <div class="staff-card">
-          <img src="https://cdn.discordapp.com/attachments/1404148307181174997/1424869174588735609/IMG_2422.webp?ex=68e58454&is=68e432d4&hm=ed44468ab90047749a3261dafcba3837783ad980f10c794461cd8093326ed5dd&" />
-          <div class="staff-name">Unknown</div>
-          <div class="staff-role">Senior Management</div>
-        </div>
-        <div class="staff-card">
-          <img src="https://cdn.discordapp.com/attachments/1404148307181174997/1424869174588735609/IMG_2422.webp?ex=68e58454&is=68e432d4&hm=ed44468ab90047749a3261dafcba3837783ad980f10c794461cd8093326ed5dd&" />
-          <div class="staff-name">Unknown</div>
-          <div class="staff-role">Senior Management</div>
-        </div>
-        <div class="staff-card">
-          <img src="https://cdn.discordapp.com/attachments/1404148307181174997/1424869174588735609/IMG_2422.webp?ex=68e58454&is=68e432d4&hm=ed44468ab90047749a3261dafcba3837783ad980f10c794461cd8093326ed5dd&" />
-          <div class="staff-name">Unknown</div>
-          <div class="staff-role">Senior Management</div>
-        </div>
-      </div>
-
-      <div class="section-header">Management</div>
-      <div class="staff-grid">
-        <div class="staff-card">
-          <img src="https://cdn.discordapp.com/attachments/1404148307181174997/1424869174588735609/IMG_2422.webp?ex=68e58454&is=68e432d4&hm=ed44468ab90047749a3261dafcba3837783ad980f10c794461cd8093326ed5dd&" />
-          <div class="staff-name">Unknown</div>
-          <div class="staff-role">Management</div>
-        </div>
-        <div class="staff-card">
-          <img src="https://cdn.discordapp.com/attachments/1404148307181174997/1424869174588735609/IMG_2422.webp?ex=68e58454&is=68e432d4&hm=ed44468ab90047749a3261dafcba3837783ad980f10c794461cd8093326ed5dd&" />
-          <div class="staff-name">Unknown</div>
-          <div class="staff-role">Management</div>
-        </div>
-      </div>
-
-      <div class="section-header">Junior Management</div>
-      <div class="staff-grid">
-        <div class="staff-card">
-          <img src="https://cdn.discordapp.com/attachments/1404148307181174997/1424869174588735609/IMG_2422.webp?ex=68e58454&is=68e432d4&hm=ed44468ab90047749a3261dafcba3837783ad980f10c794461cd8093326ed5dd&" />
-          <div class="staff-name">Unknown</div>
-          <div class="staff-role">Junior Management</div>
-        </div>
-        <div class="staff-card">
-          <img src="https://cdn.discordapp.com/attachments/1404148307181174997/1424869174588735609/IMG_2422.webp?ex=68e58454&is=68e432d4&hm=ed44468ab90047749a3261dafcba3837783ad980f10c794461cd8093326ed5dd&" />
-          <div class="staff-name">Unknown</div>
-          <div class="staff-role">Junior Management</div>
-        </div>
-      </div>
-    </section>
-
-    <section id="roles" class="tab-content">
-      <h2>Chain of Command</h2>
-
-      <p>
-        <strong>
-          <img src="https://i.postimg.cc/NLVwb5nC/bod.png" alt="Board of Directors Icon" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 6px;">
-          Board of Directors
-        </strong> – Directors oversee the entire server and make voted decisions. Do not DM or ping them; use tickets or staff chat.
-      </p>
-
-      <p>
-        <strong>
-          <img src="https://i.postimg.cc/DJLyP7wM/mgmt.png" alt="Management Icon" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 6px;">
-          Management Team
-        </strong> – Handle large reports, monitor performance, and oversee IA and lower staff.
-      </p>
-
-      <p>
-        <strong>
-          <img src="https://i.postimg.cc/grh6gP7d/ia.png" alt="Internal Affairs Icon" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 6px;">
-          Internal Affairs Team
-        </strong> – Handle tickets, strikes, and staff infractions. Go to them before upper management.
-      </p>
-
-      <p>
-        <strong>
-          <img src="https://i.postimg.cc/jwmPLxk3/admin.png" alt="Admin Icon" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 6px;">
-          Administrative Team
-        </strong> – Oversee moderators, manage bans, and resolve serious in-game issues.
-      </p>
-
-      <p>
-        <strong>
-          <img src="https://i.postimg.cc/kVWkjGWK/mod.png" alt="Moderator Icon" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 6px;">
-          Moderation Team
-        </strong> – Issue warnings and kicks, and ensure fair rule enforcement in-game.
-      </p>
-    </section>
-
-    <section id="conduct" class="tab-content">
-      <h2>Staff Regulation and Conduct</h2>
-      <ol class="custom-numbered-list">
-        <li>Staff are not permitted to perform law enforcement duties while on duty. This includes speeding, running red lights, and running stop signs.</li>
-        <li>Roleplaying of any sort while on duty is prohibited and will result in punishment.</li>
-        <li>If a user asks to heal, always check for roleplay context first, to avoid ruining roleplays.</li>
-        <li>Rank Uniforms: Staff members must wear their designated rank uniforms while on duty to ensure they are easily identifiable.</li>
-        <li>If you are wearing the staff uniform, nothing should be covering it, so that community members can identify your rank.</li>
-        <li>Staff Cars Only: Use only the designated staff cars while on duty. Personal or roleplay vehicles are not allowed for staff use during shifts.</li>
-        <li>Professionalism: Maintain a professional and respectful demeanor with players and fellow staff members at all times.</li>
-        <li>Impartiality: Enforce rules fairly and without bias. Treat all players equally, regardless of their rank or status on the server.</li>
-        <li>You must use 4+ letters at all times for all commands.</li>
-        <li>Chain of Command: Follow the chain of command by pinging the lowest rank online that can assist you. (Mod → Admin → IA → Mgmt → BoD)</li>
-        <li>Communication: Keep open lines of communication with other staff members. Report any serious issues or incidents promptly.</li>
-        <li>In any mod and all mod calls, the user MUST have video evidence. We do NOT take witnesses or logs as proof.</li>
-        <li>Avoid arguing with members; you have the final say, and incidents can be reported through a ticket.</li>
-        <li>If a user asks for a supervisor, finish the scene and guide them to open a ticket in our communication server.</li>
-        <li>You may NOT ping or TP to HRs without permission. PM them instead.</li>
-        <li>If you’re unresponsive for 5+ minutes in-game, it will be considered shift grinding.</li>
-        <li>GTA driving includes recklessly driving in opposite lanes, crashing into poles, or driving medians.</li>
-        <li>Do not park at medians or islands. Continuous patrolling ensures good RP.</li>
-      </ol>
-    </section>
-
-    <section id="resources" class="tab-content">
-      <h2>Staff Resources</h2>
-
-      <button class="collapsible">
-  <img src="https://i.postimg.cc/8sNyStg2/moderation-guide.png" alt="Moderation Icon" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 8px;">
-  Moderation Guide
-</button>
-<div class="content">
-  <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; text-align: center;">
-    <thead>
-      <tr style="background-color: black; color: white;">
-        <th style="padding: 10px; border: 1px solid #ddd;">Warn</th>
-        <th style="padding: 10px; border: 1px solid #ddd;">Kick</th>
-        <th style="padding: 10px; border: 1px solid #ddd;">Ban</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td style="background-color: #00cc44; padding: 10px; border: 1px solid #ccc;">New Life Rule (NLR)</td>
-        <td style="background-color: #ff9933; padding: 10px; border: 1px solid #ccc;">Interfering with staff base</td>
-        <td style="background-color: #e60000; color: white; padding: 10px; border: 1px solid #ccc;">Leave To Avoid Punishment (LTAP)</td>
-      </tr>
-      <tr>
-        <td style="background-color: #00cc44; padding: 10px;">Vehicle DeathMatch (VDM)</td>
-        <td style="background-color: #ff9933; padding: 10px;">Staff RDM/VDM</td>
-        <td style="background-color: #e60000; color: white; padding: 10px;">No Intention To Roleplay (NITRP)</td>
-      </tr>
-      <tr>
-        <td style="background-color: #00cc44; padding: 10px;">Random DeathMatch (RDM)</td>
-        <td style="background-color: #ff9933; padding: 10px;">Staff Evasion</td>
-        <td style="background-color: #e60000; color: white; padding: 10px;">Mass RDM/VDM</td>
-      </tr>
-      <tr>
-        <td style="background-color: #00cc44; padding: 10px;">Fail Roleplay (FRP)</td>
-        <td style="background-color: #ff9933; padding: 10px;">Staff Disrespect</td>
-        <td style="background-color: #e60000; color: white; padding: 10px;">Suicidal RP</td>
-      </tr>
-      <tr>
-        <td style="background-color: #00cc44; padding: 10px;">Cuff Rush</td>
-        <td style="background-color: #ff9933; padding: 10px;">Crime in Safe Zone</td>
-        <td style="background-color: #e60000; color: white; padding: 10px;">Roblox ToS</td>
-      </tr>
-      <tr>
-        <td style="background-color: #00cc44; padding: 10px;">Using banned car/gun without booster perks</td>
-        <td style="background-color: #ff9933; padding: 10px;">Tool abusing</td>
-        <td style="background-color: #e60000; color: white; padding: 10px;">Exploiting</td>
-      </tr>
-      <tr>
-        <td style="background-color: #00cc44; padding: 10px;">False Mod Call</td>
-        <td style="background-color: #ff9933; padding: 10px;">Interrupting a mod scene</td>
-        <td style="background-color: #e60000; color: white; padding: 10px;">Staff Impersonating</td>
-      </tr>
-      <tr>
-        <td style="background-color: #00cc44; padding: 10px;">Auto Arrest</td>
-        <td style="background-color: #ff9933; padding: 10px;">Interrupting STS</td>
-        <td style="background-color: #e60000; color: white; padding: 10px;">Alcohol/Drug Roleplay</td>
-      </tr>
-      <tr>
-        <td style="background-color: #00cc44; padding: 10px;">Using the wrong or not using livery</td>
-        <td style="background-color: #ff9933; padding: 10px;">Lying and disobeying to staff</td>
-        <td style="background-color: #e60000; color: white; padding: 10px;">Not having Discord/Not being able to join</td>
-      </tr>
-      <tr>
-        <td style="background-color: #00cc44; padding: 10px;">Unrealistic Avatar (x1)</td>
-        <td style="background-color: #ff9933; padding: 10px;">Unrealistic avatar (x2)</td>
-        <td style="background-color: #e60000; color: white; padding: 10px;">Trolling</td>
-      </tr>
-      <tr>
-        <td style="background-color: #00cc44; padding: 10px;">Failure to join VC/DC (x1)</td>
-        <td style="background-color: #ff9933; padding: 10px;">Failure to join VC/DC (x2)</td>
-        <td style="background-color: #e60000; color: white; padding: 10px;">NSFW Avatar, Username, or Wording</td>
-      </tr>
-      <tr>
-        <td style="background-color: #00cc44; padding: 10px;">Interrupting Roleplays (x1)</td>
-        <td style="background-color: #ff9933; padding: 10px;">Interrupting Roleplays (x2)</td>
-        <td style="background-color: #e60000; color: white; padding: 10px;">MRDM in Safe Zone</td>
-      </tr>
-      <tr>
-        <td style="background-color: #00cc44; padding: 10px;">GTA Driving (First offence verbal, second offence warning)</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="nav">
+    <div class="nav-item active"><i data-lucide="layout-dashboard"></i> Staff Index</div>
+    <div class="nav-item"><i data-lucide="link"></i> Chain of Command</div>
+    <div class="nav-item"><i data-lucide="bar-chart-3"></i> Analytics</div>
+    <div class="nav-item"><i data-lucide="settings"></i> Settings</div>
+  </div>
 </div>
 
+<!-- Main -->
+<div class="main">
+  <div class="panel">
 
-      <button class="collapsible">
- <img src="https://i.postimg.cc/YCdBKkD7/image.png" alt="Discord Icon" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 8px;">
-  Discord Checks Guide
-</button>
-<div class="content">
-  <p>Always do a voice channel check with all players and a text channel check.</p>
+    <!-- Regulations -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-header-left">
+          <i data-lucide="book"></i>
+          Staff Regulations & Conduct
+        </div>
+        <i class="chevron" data-lucide="chevron-down"></i>
+      </div>
+      <div class="section-content">
+        <ul>
+          <li>No law enforcement actions while on duty.</li>
+          <li>No roleplay while staffed.</li>
+          <li>Check RP context before healing.</li>
+          <li>Rank uniform must be visible.</li>
+          <li>Staff vehicles only.</li>
+          <li>Professionalism & impartiality required.</li>
+          <li>4+ letters for all commands.</li>
+          <li>Follow chain of command.</li>
+          <li>Video evidence required for all mod calls.</li>
+          <li>No witnesses or logs accepted.</li>
+          <li>Guide users to tickets for supervisors.</li>
+          <li>No HR TP or pings without permission.</li>
+          <li>5+ mins unresponsive = shift grinding.</li>
+          <li>GTA driving rules enforced.</li>
+          <li>Continuous patrol required.</li>
+        </ul>
+      </div>
+    </div>
 
-  <ul>
-    <li>Make sure all members have their account linked and verified.</li>
-    <li>Check if the user has read and accepted all server rules.</li>
-    <li>Ensure no inappropriate content in usernames or profiles.</li>
-    <li>Respond politely and professionally to questions or issues.</li>
-  </ul>
+    <!-- Resources -->
+ <!-- Moderation Guide -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-header-left">
+      <i data-lucide="gavel"></i>
+      Moderation Guide
+    </div>
+    <i class="chevron" data-lucide="chevron-down"></i>
+  </div>
 
-  <h4>1. Are They in the Discord Server & VC?</h4>
-  <p>Use the command <code>/erlc membercheck</code>. This will pull up all players in-game and show their Discord status.</p>
-  <p>It will tell you:</p>
-  <ul>
-    <li>If they are in the Discord</li>
-    <li>If they are in a Voice Channel (VC)</li>
-  </ul>
-  <p>This works through <strong>Central</strong> or <strong>Melonly</strong>.</p>
-  <ul>
-    <li>Use <strong>Melonly</strong> as the main tool.</li>
-    <li>If Melonly is down, switch to <strong>Central</strong> to complete the check.</li>
-  </ul>
+  <div class="section-content">
+    <ul>
+      <li><b>WARN OFFENSES</b></li>
+      <ul>
+        <li>New Life Rule (NLR)</li>
+        <li>Vehicle DeathMatch (VDM)</li>
+        <li>Random DeathMatch (RDM)</li>
+        <li>Fail Roleplay (FRP)</li>
+        <li>Cuff Rush</li>
+        <li>Using banned car/gun without booster perks</li>
+        <li>False Mod Call</li>
+        <li>Auto Arrest</li>
+        <li>Using the wrong or not using livery</li>
+        <li>Unrealistic Avatar (x1)</li>
+        <li>Failure to join VC/DC (x1)</li>
+        <li>Interrupting Roleplays (x1)</li>
+        <li>GTA Driving (first offense verbal, second offense warning)</li>
+      </ul>
 
-  <h4>2. If Melonly or Central Are Down Completely:</h4>
-  <ul>
-    <li>You may teleport to the player <strong>ONLY</strong> to bring them to the Staff Base.</li>
-    <li>Ask them if they are in the Discord and in a VC (if required by rules).</li>
-    <li>If they aren’t, or they lie/refuse to answer, you may jail them if under 39/40. If it’s 39/40, you may kick them.</li>
-  </ul>
-  <p><strong>Stay professional and consistent.</strong> These checks are for staff use only; no abuse will be tolerated.</p>
+      <br>
+
+      <li><b>KICK OFFENSES</b></li>
+      <ul>
+        <li>Interfering with staff base</li>
+        <li>Staff RDM / Staff VDM</li>
+        <li>Staff Evasion</li>
+        <li>Staff Disrespect</li>
+        <li>Crime in Safe Zone</li>
+        <li>Tool abusing</li>
+        <li>Interrupting a mod scene</li>
+        <li>Interrupting STS</li>
+        <li>Lying and disobeying to staff</li>
+        <li>Unrealistic avatar (x2)</li>
+        <li>Failure to join VC/DC (x2)</li>
+        <li>Interrupting Roleplays (x2)</li>
+      </ul>
+
+      <br>
+
+      <li><b>BAN OFFENSES</b></li>
+      <ul>
+        <li>Leave To Avoid Punishment (LTAP)</li>
+        <li>No Intention To Roleplay (NITRP)</li>
+        <li>Mass RDM / VDM</li>
+        <li>Suicidal Roleplay</li>
+        <li>Roblox ToS Violations</li>
+        <li>Exploiting</li>
+        <li>Staff Impersonating</li>
+        <li>Alcohol / Drug Roleplay</li>
+        <li>Not having Discord / Not being able to join</li>
+        <li>Trolling</li>
+        <li>NSFW Avatar, Username, or Wording</li>
+        <li>MRDM in Safe Zone</li>
+      </ul>
+    </ul>
+  </div>
 </div>
 
+ <!-- Discord Checks Guide -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-header-left">
+      <i data-lucide="shield-check"></i>
+      Discord Checks Guide
+    </div>
+    <i class="chevron" data-lucide="chevron-down"></i>
+  </div>
 
-      <button class="collapsible">
-  <img src="https://i.postimg.cc/6qV5CgWQ/image.png" alt="Handbook Icon" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 8px;">
-  H/M Guide
-</button>
-<div class="content">
-  <p>All <code>:h</code>'s listed below can be used freely by staff with the <strong>Moderator rank or higher</strong>.</p>
+  <div class="section-content">
+    <ul>
+      <li>Always perform a voice channel check with all players and a text channel check.</li>
+      <li>Ensure all members have their Discord account linked and verified.</li>
+      <li>Confirm the user has read and accepted all server rules.</li>
+      <li>Check for inappropriate content in usernames or profiles.</li>
+      <li>Respond politely and professionally to all questions or issues.</li>
+    </ul>
 
+    <br>
+
+    <ul>
+      <li><b>1. Are They in the Discord Server & VC?</b></li>
+      <ul>
+        <li>Use the command <b>/erlc membercheck</b>.</li>
+        <li>This pulls all in-game players and shows their Discord status.</li>
+        <li>It will show:
+          <ul>
+            <li>If they are in the Discord</li>
+            <li>If they are in a Voice Channel (VC)</li>
+          </ul>
+        </li>
+        <li>This works through <b>Central</b> or <b>Melonly</b>.</li>
+        <li>Use <b>Melonly</b> as the primary tool.</li>
+        <li>If Melonly is down, switch to <b>Central</b>.</li>
+      </ul>
+    </ul>
+
+    <br>
+
+    <ul>
+      <li><b>2. If Melonly or Central Are Down Completely:</b></li>
+      <ul>
+        <li>You may teleport to the player <b>ONLY</b> to bring them to the Staff Base.</li>
+        <li>Ask if they are in the Discord and in a VC (if required).</li>
+        <li>If they are not, or they lie/refuse to answer:
+          <ul>
+            <li>Jail if under <b>39/40</b></li>
+            <li>Kick if <b>39/40</b></li>
+          </ul>
+        </li>
+      </ul>
+    </ul>
+
+    <br>
+
+    <ul>
+      <li><b>Stay professional and consistent.</b></li>
+      <li>These checks are for staff use only; abuse will not be tolerated.</li>
+    </ul>
+  </div>
+</div>
+<!-- H/M Guide -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-header-left">
+      <i data-lucide="megaphone"></i>
+      H/M Guide <--
+    </div>
+    <i class="chevron" data-lucide="chevron-down"></i>
+  </div>
+
+  <div class="section-content">
+    <p>
+      All <code>:h</code> messages listed below may be used freely by staff members
+      with the <b>Moderator rank or higher</b>.
+    </p>
+
+    <ul>
+      <li>
+        <b>Jewelry Store:</b>
+        <code>:h Family Jewls is now open! Come get something for yourself or a friend!</code>
+      </li>
+
+      <li>
+        <b>High Rock Park:</b>
+        <code>:h HRP is now open! Come see the views or get a cabin!</code>
+      </li>
+
+      <li>
+        <b>Three Guys:</b>
+        <code>:h Three guys is now open! Come get a quick bite!</code>
+      </li>
+
+      <li>
+        <b>La Mesa:</b>
+        <code>:h La mesa is now open! See you there!</code>
+      </li>
+    </ul>
+  </div>
+</div>
+<!-- Requirements & Policies -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-header-left">
+      <i data-lucide="clipboard-list"></i>
+      Requirements & Policies
+    </div>
+    <i class="chevron" data-lucide="chevron-down"></i>
+  </div>
+
+  <div class="section-content">
+    <p>
+      <b>Minimum Hours:</b>
+      You are expected to complete <b>4 hours every week</b> on shift using Melonly.
+      You have one full week to complete this quota.
+    </p>
+
+    <p>
+      <b>Leave of Absence (LOA):</b>
+      If you are unable to meet your required hours, you must submit an LOA.
+      Valid reasons include mental or health issues, school exams, holidays,
+      and other reasonable circumstances.
+    </p>
+
+    <p>
+      <b>Promotions:</b><br>
+      • Single Promotion: <b>6 hours</b> (2 logs per hour)<br>
+      • Double Promotion: <b>14 hours</b> (2 logs per hour)<br>
+      • Triple Promotion: <b>30 hours</b> (2 logs per hour)
+    </p>
+
+    <p>
+      <b>Strike Policy:</b>
+      Receiving <b>2 or more strikes</b> during a promotion work period
+      will disqualify you from promotion eligibility for that week.
+    </p>
+
+    <p>
+      <b>Infraction Policy:</b>
+      All infractions are <b>not appealable</b> until their expiry timer has passed.
+    </p>
+
+    <p>
+      <b>Staff of the Week:</b>
+      The staff member with the <b>highest total hours</b> for the week
+      will be selected as Staff of the Week.
+    </p>
+
+    <p>
+      <b>Retiring Policy:</b>
+      Staff below the rank of <b>JA</b> will not receive the “Retired Staff” role.
+      Staff ranked <b>TIA or higher</b> are eligible for the
+      “Retired High Rank” role.
+    </p>
+
+    <p>
+      <b>Reinstatement Policy:</b>
+      Prior <b>TIA+</b> members may return as a maximum rank of
+      <b>Junior Moderator</b>.
+      Members with the “Retired Staff” role (JA+)
+      may return as <b>Trial Staff</b>.
+    </p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-header-left">
+      <i data-lucide="clipboard-list"></i>
+      Staff Outposts
+    </div>
+    <i class="chevron" data-lucide="chevron-down"></i>
+  </div>
+
+  <div class="section-content">
+
+  <p>
+    Staff Outposts are designated supervision areas used to maintain server order and monitor high-activity locations.
+    Outposts are ranked from most important (1) to least important (4). You must prioritize higher-ranked outposts first.
+  </p>
+
+  <p>
+    While stationed at an outpost, you must be actively performing moderation duties such as Discord checks,
+    voice checks, or handling nearby rule violations.
+  </p>
+
+  <p><strong>Outpost Rules:</strong></p>
   <ul>
-    <li><strong>Jewelry Store:</strong> <code>:h Family Jewls is now open! Come get something for yourself or a friend!</code></li>
-    <li><strong>High Rock Park:</strong> <code>:h HRP is now open! Come see the views or get a cabin!</code></li>
-    <li><strong>Three Guys:</strong> <code>:h Three guys is now open! Come get a quick bite!</code></li>
-    <li><strong>La Mesa:</strong> <code>:h La mesa is now open! See you there!</code></li>
+    <li>A maximum of <strong>2 on-duty staff members</strong> may occupy one outpost.</li>
+    <li>You must remain in your vehicle while at an outpost.</li>
+    <li>Do not make it obvious that the location is a staff base.</li>
+    <li>You may load users only if they harass or interfere with your duties.</li>
   </ul>
-</div>
-      <button class="collapsible">
-  <img src="https://i.postimg.cc/PqXM8vHG/image.png" alt="Requirements Icon" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 8px;">
-  Requirements and Policies 
-</button>
-<div class="content">
-  <p><strong>Minimum Hours:</strong> You are expected to complete 4 hours every week on shift with Melonly. You have a week to complete this quota.</p>
 
-  <p><strong>Leave of Absence:</strong> If you cannot complete this, we have a system called Leave of Absence (LOA). This is the system we use if you are not able to go on duty. Reasons you can take LOA include mental/health issues, school exams, holidays, and many other reasons.</p>
-
-  <p><strong>Promotions:</strong> A single promotion lasts 6 hours and requires 2 logs per hour. A double promotion lasts 14 hours and requires 2 logs per hour. A triple promotion lasts 30 hours and requires 2 logs per hour.</p>
-
-  <p><strong>Strike Policy:</strong> If you receive 2 or more strikes within a promotion work, you will not be eligible for a promotion for that week.</p>
-
-  <p><strong>Infraction Policy:</strong> All infractions cannot be appealed until after the expiry timer is up.</p>  
-
-  <p><strong>Staff of the Week:</strong> To be named staff of the week, you must have the most hours out of the whole staff team.</p>
-
-  <p><strong>Retiring Policy:</strong> Users below the rank of JA will not receive "Retired Staff". All users above the rank of TIA are eligible for the "Retired High Rank" role.</p>
-
-  <p><strong>Reinstatement Policy:</strong> Prior TIA+ members can return as "Junior Mod Rank" max. "Retired Staff" role members (JA+) can return as "Trial Staff".</p>
-</div>
-
-
-<button class="collapsible">
-  <img src="https://i.postimg.cc/xT0xscrt/image.png" alt="Outposts Icon" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 8px;">
-  Staff Outposts
-</button>
-
-<div class="content">
-  <!-- Your Staff Outposts content goes here -->
-  <h2>Staff Outposts</h2>
-  <p>
-    Outposts are numbered in order from most to least important; go to the most important ones.
-    The staff outposts are numbered from most important (1) to least important (4) on the image below.
-  </p>
-  <p>
-    You must be doing discord checks or mod calls while your car is at an outpost.
-  </p>
-  <p>There will be a maximum of 2 on duty staff members per outpost.</p>
-  <p>
-    Don’t make it obvious that it is a staff base, all you should have with you is your car.
-    People may come up to you, but you are permitted to load them if they harass or interfere with you.
-  </p>
-  <p>
-    Make sure you are surveilling the post and the areas nearby in order to maintain smooth roleplay and order around the server.
-    You must also conduct discord & voice chat checks at these staff outposts.
-  </p>
-
-  <h3 style="margin-top: 30px;">Guide:</h3>
-  <p>While on duty at the corresponding staff bases, you must do the following:</p>
-  <ol style="margin-left: 20px; margin-bottom: 20px;">
-    <li>Supervise River City Civilian Spawn, and surrounding areas.</li>
-    <li>Supervise Gun Store, Fire Department, and surrounding areas.</li>
-    <li>Supervise Mod Shop, the intersections nearby, the Bank, the Fire department, and surrounding areas.</li>
-    <li>Supervise the City Center, the City itself, the Shopping Plaza, and Three Guys.</li>
+  <h3 style="margin-top: 30px;">Duties While at an Outpost</h3>
+  <ol style="margin-left: 20px;">
+    <li>Monitor roleplay activity in and around your assigned area.</li>
+    <li>Conduct Discord and VC checks regularly.</li>
+    <li>Respond to nearby rule-breaking immediately.</li>
+    <li>Handle mod calls and return to your outpost afterward.</li>
   </ol>
 
-  <h3 style="margin-top: 30px;">What you shouldn’t do:</h3>
-  <ol style="margin-left: 20px; margin-bottom: 20px;">
-    <li>You should NEVER just be standing still, you should either be conducting discord checks or handling rule-breaking near your outpost.</li>
-    <li>You should NEVER interfere with roleplay. You should remain at your outpost unless you witness any rule-breaking near your outpost.</li>
-    <li>You should NEVER help with police chases. In a police chase, there really aren't any instances of GTA-Driving, so lay low on that unless there is any rule-breaking involved.</li>
+  <h3 style="margin-top: 30px;">What You Should NOT Do</h3>
+  <ol style="margin-left: 20px;">
+    <li>Never stand idle — always be moderating or checking activity.</li>
+    <li>Never interfere with ongoing roleplay unless rules are broken.</li>
+    <li>Never assist in police chases unless moderation is required.</li>
   </ol>
 
-  <h3 style="margin-top: 30px;">Staff Outposts Images and Locations:</h3>
+  <h3 style="margin-top: 30px;">Outpost Locations</h3>
 
-  <h4 style="margin-top: 25px;">Outpost 1: Spawn</h4>
+  <h4>Outpost 1 – Spawn</h4>
   <p>
-    Spawn is the most crime-filled area and should be closely supervised, this is our main priority for moderation as it is where most trolling and other rule-breaking happens. (expect to get VDMed)
+    The highest-priority outpost. Spawn experiences the most trolling, RDM, and VDM.
+    Constant supervision is required.
   </p>
 
-  <h4 style="margin-top: 20px;">Outpost 2: Gun Store</h4>
+  <h4>Outpost 2 – Gun Store</h4>
   <p>
-    Gun store is typically where the most RDM happens because of the quick access to guns and people to fight, expect a lot of RDM logs.
+    High RDM risk due to weapon access. Expect frequent moderation logs and incidents.
   </p>
 
-  <h4 style="margin-top: 20px;">Outpost 3: Mod Shop</h4>
+  <h4>Outpost 3 – Mod Shop</h4>
   <p>
-    Mod shop has the very important job of supervising the intersection, FD station, and bank to ensure RDM and other fail roleplay is not happening. They should be always on alert for gunshots to investigate.
+    Responsible for monitoring the nearby intersection, fire station, and bank.
+    Staff must stay alert for gunshots and fail roleplay.
   </p>
 
-  <h4 style="margin-top: 20px;">Outpost 4: Three Guys</h4>
+  <h4>Outpost 4 – Three Guys</h4>
   <p>
-    Outpost 4 is the least active of the 4, your job here is to supervise the city center, jewelry, and the city that you can see from the location. You should be a lot calmer here so prioritize discord checks and VC checks.
+    Lowest activity outpost. Focus on Discord and VC checks while monitoring the city center,
+    jewelry store, and surrounding areas.
   </p>
 
   <p style="margin-top: 20px;">
-    Please remember for all of these locations that your priorities should be supervising and doing discord/VC checks. Always make sure you are doing mod calls when they appear and to come back when finished.
+    Your priority at all outposts is supervision and moderation. Always remain professional,
+    active, and alert.
   </p>
 </div>
 
-    </section>
-  </main>
 
-  <script>
-    // Tab functionality
-    const tabs = document.querySelectorAll('.tab-button');
-    const contents = document.querySelectorAll('.tab-content');
+  </div>
+</div>
 
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
+<script>
+ const images = [
+  'https://media.discordapp.net/attachments/1462173946807058616/1462174031649181938/image.png?ex=696e8caf&is=696d3b2f&hm=c19ba3569b9cbc0bc120a4db81f3ec6bc6b042d7c7b72d5c467ceaa2ace53e73&=&format=webp&quality=lossless&width=1054&height=552',
+  'https://media.discordapp.net/attachments/1456546359816753244/1456546360189784208/image.png?ex=696e82c1&is=696d3141&hm=d10f1488a1bd5f7d92b098f4b51b4b01d95560be09c21e7eb4939e8ee613e196&=&format=webp&quality=lossless&width=828&height=552',
+  'https://media.discordapp.net/attachments/1456546212726571018/1456546213150064702/image.png?ex=696e829e&is=696d311e&hm=3d284f5d956ffc5b84e6db8a0c23e9ce964a51c9da96cbc1d0d1c4237cde4c49&=&format=webp&quality=lossless&width=884&height=552',
+  'https://media.discordapp.net/attachments/1456545688837029940/1456545689201803417/image.png?ex=696e8221&is=696d30a1&hm=50d3fffc7a0a80e4c37a44b46cf1af678bd7ef06a7d224608aa0d3e8dfcbbe0d&=&format=webp&quality=lossless&width=828&height=552',
+  'https://media.discordapp.net/attachments/1462172938966011965/1462172939540500509/image.png?ex=696e8baa&is=696d3a2a&hm=f17c3b5a824182fb4b940150ba64298c26be7dff702d96674793dce81a0cab28&=&format=webp&quality=lossless&width=1318&height=512'
+];
 
-        contents.forEach(content => {
-          content.classList.remove('active');
-        });
-        const target = tab.getAttribute('data-tab');
-        document.getElementById(target).classList.add('active');
-      });
-    });
+let index = 0;
+const bg = document.querySelector('.bg-container');
 
-    // Collapsible content for resources
-    const collapsibles = document.querySelectorAll('.collapsible');
-   collapsibles.forEach(button => {
-  button.addEventListener('click', () => {
-    button.classList.toggle('active');
-    const content = button.nextElementSibling;
+// Preload images (optional but smoother)
+images.forEach(src => {
+  const img = new Image();
+  img.src = src;
+});
 
-    if (content.style.maxHeight) {
-      // Collapse
-      content.style.maxHeight = null;
-    } else {
-      // Expand
-      content.style.maxHeight = content.scrollHeight + "px";
-    }
+// Function to change background
+function changeBackground() {
+  // Fade out
+  bg.style.opacity = 0;
+
+  setTimeout(() => {
+    // Change image
+    bg.style.backgroundImage = `url('${images[index]}')`;
+
+    // Fade in
+    bg.style.opacity = 1;
+
+    // Next image
+    index = (index + 1) % images.length;
+  }, 1000); // 1000ms matches the CSS transition duration
+}
+
+// Start slideshow
+changeBackground(); // initial
+setInterval(changeBackground, 5000); // every 5 seconds
+
+
+lucide.createIcons();
+
+document.querySelectorAll('.section-header').forEach(header => {
+  header.addEventListener('click', () => {
+    header.parentElement.classList.toggle('open');
+  });
+});
+// Sidebar navigation click
+const navItems = document.querySelectorAll('.nav-item');
+const panels = document.querySelectorAll('.panel');
+
+navItems.forEach(item => {
+  item.addEventListener('click', () => {
+    // Remove active class from all nav items
+    navItems.forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+
+    // Show corresponding panel
+    if(item.textContent.includes('Staff Index')){
+      panels.forEach(p => p.style.display = 'none');
+      document.querySelector('.main > .panel:first-child').style.display = 'block';
+    } else if(item.textContent.includes('Chain of Command')){
+      panels.forEach(p => p.style.display = 'none');
+      document.getElementById('chain-panel').style.display = 'block';
+    } 
+    // Add more if needed for Analytics, Settings...
   });
 });
 
-    // Theme toggle
-    function toggleTheme() {
-      document.body.classList.toggle('dark');
-    }
-  </script>
+</script>
+
 </body>
 </html>
