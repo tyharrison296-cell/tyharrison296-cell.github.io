@@ -2,598 +2,364 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>NYCRP Staff Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/lucide@latest"></script>
+<title>Blueline Designs</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  background: radial-gradient(circle at top, #1a1d23, #0a0c10);
-  color: #e5e7eb;
-  height: 100vh;
-  display: flex;
-}
-.bg-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  filter: blur(10px) brightness(0.45);
-  transition: opacity 1s ease-in-out;  /* smooth fading */
-  z-index: 0;
-  opacity: 1;
+:root{
+    --neon-blue:#00bfff;
+    --dark-bg:#0a0f1c;
+    --glass-bg:rgba(255,255,255,0.05);
+    --glass-border:rgba(255,255,255,0.1);
 }
 
-.sidebar,
-.main,
-.panel {
-  position: relative;   /* allow z-index to work */
-  z-index: 1;           /* above the background */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins', sans-serif;
 }
 
-
-/* ===== Sidebar ===== */
-.sidebar {
-  width: 270px;
-  background: rgba(15,17,22,0.95);
-  border-right: 1px solid rgba(255,255,255,0.05);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
+body{
+    background:linear-gradient(135deg,#050a14,#0a0f1c);
+    color:white;
+    overflow-x:hidden;
 }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 700;
-  margin-bottom: 30px;
+/* LOADER */
+.loader{
+    position:fixed;
+    inset:0;
+    background:#050a14;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+    transition:opacity .4s ease;
 }
 
-.nav {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.loader.hidden{
+    opacity:0;
+    pointer-events:none;
 }
 
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  color: #cfd3da;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+.loader-circle{
+    width:60px;
+    height:60px;
+    border:4px solid rgba(255,255,255,0.1);
+    border-top:4px solid var(--neon-blue);
+    border-radius:50%;
+    animation:spin 1s linear infinite;
 }
 
-.nav-item:hover,
-.nav-item.active {
-  background: rgba(255,255,255,0.08);
-  color: #fff;
+@keyframes spin{
+    to{transform:rotate(360deg);}
 }
 
-/* ===== Main ===== */
-.main {
-  flex: 1;
-  padding: 26px;
-  overflow-y: auto;
+/* NAVBAR */
+nav{
+    position:fixed;
+    top:0;
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 40px;
+    backdrop-filter:blur(15px);
+    background:rgba(0,0,0,0.6);
+    border-bottom:1px solid var(--glass-border);
+    z-index:1000;
 }
 
-.panel {
-  background: linear-gradient(
-    180deg,
-    rgba(255,255,255,0.08),
-    rgba(255,255,255,0.03)
-  );
-  border-radius: 16px;
-  padding: 22px;
-  border: 1px solid rgba(255,255,255,0.08);
+nav img{
+    height:40px;
 }
 
-/* ===== Dropdown Sections ===== */
-.section {
-  background: rgba(0,0,0,0.25);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 12px;
-  margin-bottom: 14px;
-  overflow: hidden;
+.nav-links{
+    display:flex;
+    gap:20px;
 }
 
-.section-header {
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  font-weight: 600;
+.nav-links button{
+    background:transparent;
+    border:2px solid var(--neon-blue);
+    color:white;
+    padding:8px 18px;
+    border-radius:30px;
+    cursor:pointer;
+    transition:.3s;
 }
 
-.section-header-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.nav-links button:hover{
+    background:var(--neon-blue);
+    color:#000;
+    box-shadow:0 0 15px var(--neon-blue);
 }
 
-.chevron {
-  transition: transform 0.3s ease;
+/* PAGES */
+.page{
+    display:none;
+    min-height:100vh;
+    padding:120px 10% 80px;
+    animation:fadeIn .5s ease;
 }
 
-.section.open .chevron {
-  transform: rotate(180deg);
+.page.active{
+    display:block;
 }
 
-.section-content {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: max-height 0.45s ease, opacity 0.3s ease;
-  padding: 0 18px;
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
 }
 
-.section.open .section-content {
-  max-height: 2000px;
-  opacity: 1;
-  padding-bottom: 16px;
+/* HERO */
+.hero h1{
+    font-size:3rem;
+    background:linear-gradient(90deg,#00bfff,#4da6ff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
 }
 
-.section-content ul {
-  padding-left: 18px;
+.hero p{
+    margin:20px 0;
+    max-width:500px;
+    color:#ccc;
 }
 
-.section-content li {
-  margin-bottom: 8px;
-  line-height: 1.55;
-  color: #d1d5db;
+.cta-btn{
+    padding:12px 30px;
+    border-radius:30px;
+    border:none;
+    background:var(--neon-blue);
+    color:#000;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.cta-btn:hover{
+    box-shadow:0 0 25px var(--neon-blue);
+    transform:translateY(-3px);
+}
+
+/* PRODUCTS */
+.search-bar{
+    margin-bottom:30px;
+}
+
+.search-bar input{
+    width:100%;
+    padding:12px;
+    border-radius:30px;
+    border:1px solid var(--glass-border);
+    background:var(--glass-bg);
+    color:white;
+}
+
+.products-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:30px;
+}
+
+.product-card{
+    background:var(--glass-bg);
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(15px);
+    padding:20px;
+    border-radius:15px;
+    transition:.3s;
+}
+
+.product-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 0 20px rgba(0,191,255,0.4);
+}
+
+.product-image{
+    height:150px;
+    background:linear-gradient(135deg,#111,#1c2a45);
+    border-radius:10px;
+    margin-bottom:15px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:#555;
+}
+
+.notice{
+    font-size:.75rem;
+    color:#ff4d4d;
+    margin:10px 0;
+}
+
+.price{
+    font-weight:600;
+    margin-bottom:10px;
+}
+
+.buy-btn{
+    width:100%;
+    padding:10px;
+    border-radius:20px;
+    border:2px solid var(--neon-blue);
+    background:transparent;
+    color:white;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.buy-btn:hover{
+    background:var(--neon-blue);
+    color:#000;
+    box-shadow:0 0 15px var(--neon-blue);
+}
+
+/* CONTACT */
+.contact-form{
+    max-width:600px;
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.contact-form input,
+.contact-form textarea{
+    padding:12px;
+    background:var(--glass-bg);
+    border:1px solid var(--glass-border);
+    border-radius:10px;
+    color:white;
+}
+
+.contact-form button{
+    padding:12px;
+    border-radius:25px;
+    border:none;
+    background:var(--neon-blue);
+    font-weight:600;
+    cursor:pointer;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+    nav{
+        flex-direction:column;
+        gap:10px;
+    }
+    .hero h1{
+        font-size:2rem;
+    }
 }
 </style>
 </head>
-
 <body>
-<div class="bg-container"></div>
 
-
-<!-- Sidebar -->
-<div class="sidebar">
-  <div class="brand">
-    <i data-lucide="shield"></i>
-    <span>NYCRP Staff Dashboard</span>
-  </div>
-
-  <div class="nav">
-    <div class="nav-item active"><i data-lucide="layout-dashboard"></i> Staff Index</div>
-    <div class="nav-item"><i data-lucide="link"></i> Chain of Command</div>
-    <div class="nav-item"><i data-lucide="bar-chart-3"></i> Analytics</div>
-    <div class="nav-item"><i data-lucide="settings"></i> Settings</div>
-  </div>
+<div class="loader" id="loader">
+    <div class="loader-circle"></div>
 </div>
 
-<!-- Main -->
-<div class="main">
-  <div class="panel">
+<nav>
+    <img src="https://cdn.discordapp.com/attachments/1389099203648553143/1471835181102010368/IMG_3589.png?ex=699060d4&is=698f0f54&hm=11d3aac3d584278e31ad32aba99a4f07d0cc3161ff340171b9c386d6a91caa4a&" alt="Blueline Logo">
+    <div class="nav-links">
+        <button onclick="switchPage('home')">Home</button>
+        <button onclick="switchPage('products')">Products</button>
+        <button onclick="switchPage('about')">About</button>
+        <button onclick="switchPage('contact')">Contact</button>
+    </div>
+</nav>
 
-    <!-- Regulations -->
-    <div class="section">
-      <div class="section-header">
-        <div class="section-header-left">
-          <i data-lucide="book"></i>
-          Staff Regulations & Conduct
+<!-- HOME -->
+<div id="home" class="page active hero">
+    <h1>Blueline Designs</h1>
+    <p>Modern, high-quality digital designs crafted with precision and innovation.</p>
+    <button class="cta-btn" onclick="switchPage('products')">Explore Products</button>
+</div>
+
+<!-- PRODUCTS -->
+<div id="products" class="page">
+    <h2 style="margin-bottom:20px;">Our Products</h2>
+
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search products...">
+    </div>
+
+    <div class="products-grid" id="productsGrid">
+
+        <div class="product-card" data-name="Premium Banner">
+            <div class="product-image">Image Placeholder</div>
+            <h3>Premium Banner</h3>
+            <p>Custom high-quality banner design.</p>
+            <div class="notice">This product cannot be reproduced or resold.</div>
+            <div class="price">$9.99</div>
+            <a href="https://yourcheckoutlink.com" target="_blank">
+                <button class="buy-btn">Buy Now</button>
+            </a>
         </div>
-        <i class="chevron" data-lucide="chevron-down"></i>
-      </div>
-      <div class="section-content">
-        <ul>
-          <li>No law enforcement actions while on duty.</li>
-          <li>No roleplay while staffed.</li>
-          <li>Check RP context before healing.</li>
-          <li>Rank uniform must be visible.</li>
-          <li>Staff vehicles only.</li>
-          <li>Professionalism & impartiality required.</li>
-          <li>4+ letters for all commands.</li>
-          <li>Follow chain of command.</li>
-          <li>Video evidence required for all mod calls.</li>
-          <li>No witnesses or logs accepted.</li>
-          <li>Guide users to tickets for supervisors.</li>
-          <li>No HR TP or pings without permission.</li>
-          <li>5+ mins unresponsive = shift grinding.</li>
-          <li>GTA driving rules enforced.</li>
-          <li>Continuous patrol required.</li>
-        </ul>
-      </div>
+
+        <div class="product-card" data-name="Custom Livery">
+            <div class="product-image">Image Placeholder</div>
+            <h3>Custom Livery</h3>
+            <p>Futuristic vehicle livery design.</p>
+            <div class="notice">This product cannot be reproduced or resold.</div>
+            <div class="price">$14.99</div>
+            <a href="https://yourcheckoutlink.com" target="_blank">
+                <button class="buy-btn">Buy Now</button>
+            </a>
+        </div>
+
     </div>
-
-    <!-- Resources -->
- <!-- Moderation Guide -->
-<div class="section">
-  <div class="section-header">
-    <div class="section-header-left">
-      <i data-lucide="gavel"></i>
-      Moderation Guide
-    </div>
-    <i class="chevron" data-lucide="chevron-down"></i>
-  </div>
-
-  <div class="section-content">
-    <ul>
-      <li><b>WARN OFFENSES</b></li>
-      <ul>
-        <li>New Life Rule (NLR)</li>
-        <li>Vehicle DeathMatch (VDM)</li>
-        <li>Random DeathMatch (RDM)</li>
-        <li>Fail Roleplay (FRP)</li>
-        <li>Cuff Rush</li>
-        <li>Using banned car/gun without booster perks</li>
-        <li>False Mod Call</li>
-        <li>Auto Arrest</li>
-        <li>Using the wrong or not using livery</li>
-        <li>Unrealistic Avatar (x1)</li>
-        <li>Failure to join VC/DC (x1)</li>
-        <li>Interrupting Roleplays (x1)</li>
-        <li>GTA Driving (first offense verbal, second offense warning)</li>
-      </ul>
-
-      <br>
-
-      <li><b>KICK OFFENSES</b></li>
-      <ul>
-        <li>Interfering with staff base</li>
-        <li>Staff RDM / Staff VDM</li>
-        <li>Staff Evasion</li>
-        <li>Staff Disrespect</li>
-        <li>Crime in Safe Zone</li>
-        <li>Tool abusing</li>
-        <li>Interrupting a mod scene</li>
-        <li>Interrupting STS</li>
-        <li>Lying and disobeying to staff</li>
-        <li>Unrealistic avatar (x2)</li>
-        <li>Failure to join VC/DC (x2)</li>
-        <li>Interrupting Roleplays (x2)</li>
-      </ul>
-
-      <br>
-
-      <li><b>BAN OFFENSES</b></li>
-      <ul>
-        <li>Leave To Avoid Punishment (LTAP)</li>
-        <li>No Intention To Roleplay (NITRP)</li>
-        <li>Mass RDM / VDM</li>
-        <li>Suicidal Roleplay</li>
-        <li>Roblox ToS Violations</li>
-        <li>Exploiting</li>
-        <li>Staff Impersonating</li>
-        <li>Alcohol / Drug Roleplay</li>
-        <li>Not having Discord / Not being able to join</li>
-        <li>Trolling</li>
-        <li>NSFW Avatar, Username, or Wording</li>
-        <li>MRDM in Safe Zone</li>
-      </ul>
-    </ul>
-  </div>
 </div>
 
- <!-- Discord Checks Guide -->
-<div class="section">
-  <div class="section-header">
-    <div class="section-header-left">
-      <i data-lucide="shield-check"></i>
-      Discord Checks Guide
-    </div>
-    <i class="chevron" data-lucide="chevron-down"></i>
-  </div>
-
-  <div class="section-content">
-    <ul>
-      <li>Always perform a voice channel check with all players and a text channel check.</li>
-      <li>Ensure all members have their Discord account linked and verified.</li>
-      <li>Confirm the user has read and accepted all server rules.</li>
-      <li>Check for inappropriate content in usernames or profiles.</li>
-      <li>Respond politely and professionally to all questions or issues.</li>
-    </ul>
-
-    <br>
-
-    <ul>
-      <li><b>1. Are They in the Discord Server & VC?</b></li>
-      <ul>
-        <li>Use the command <b>/erlc membercheck</b>.</li>
-        <li>This pulls all in-game players and shows their Discord status.</li>
-        <li>It will show:
-          <ul>
-            <li>If they are in the Discord</li>
-            <li>If they are in a Voice Channel (VC)</li>
-          </ul>
-        </li>
-        <li>This works through <b>Central</b> or <b>Melonly</b>.</li>
-        <li>Use <b>Melonly</b> as the primary tool.</li>
-        <li>If Melonly is down, switch to <b>Central</b>.</li>
-      </ul>
-    </ul>
-
-    <br>
-
-    <ul>
-      <li><b>2. If Melonly or Central Are Down Completely:</b></li>
-      <ul>
-        <li>You may teleport to the player <b>ONLY</b> to bring them to the Staff Base.</li>
-        <li>Ask if they are in the Discord and in a VC (if required).</li>
-        <li>If they are not, or they lie/refuse to answer:
-          <ul>
-            <li>Jail if under <b>39/40</b></li>
-            <li>Kick if <b>39/40</b></li>
-          </ul>
-        </li>
-      </ul>
-    </ul>
-
-    <br>
-
-    <ul>
-      <li><b>Stay professional and consistent.</b></li>
-      <li>These checks are for staff use only; abuse will not be tolerated.</li>
-    </ul>
-  </div>
-</div>
-<!-- H/M Guide -->
-<div class="section">
-  <div class="section-header">
-    <div class="section-header-left">
-      <i data-lucide="megaphone"></i>
-      H/M Guide <--
-    </div>
-    <i class="chevron" data-lucide="chevron-down"></i>
-  </div>
-
-  <div class="section-content">
-    <p>
-      All <code>:h</code> messages listed below may be used freely by staff members
-      with the <b>Moderator rank or higher</b>.
+<!-- ABOUT -->
+<div id="about" class="page">
+    <h2>About Blueline Designs</h2>
+    <p style="margin-top:20px; max-width:700px; color:#ccc;">
+        Blueline Designs specializes in futuristic, high-impact digital artwork.
+        Every project is crafted with precision, innovation, and bold aesthetics.
     </p>
-
-    <ul>
-      <li>
-        <b>Jewelry Store:</b>
-        <code>:h Family Jewls is now open! Come get something for yourself or a friend!</code>
-      </li>
-
-      <li>
-        <b>High Rock Park:</b>
-        <code>:h HRP is now open! Come see the views or get a cabin!</code>
-      </li>
-
-      <li>
-        <b>Three Guys:</b>
-        <code>:h Three guys is now open! Come get a quick bite!</code>
-      </li>
-
-      <li>
-        <b>La Mesa:</b>
-        <code>:h La mesa is now open! See you there!</code>
-      </li>
-    </ul>
-  </div>
-</div>
-<!-- Requirements & Policies -->
-<div class="section">
-  <div class="section-header">
-    <div class="section-header-left">
-      <i data-lucide="clipboard-list"></i>
-      Requirements & Policies
-    </div>
-    <i class="chevron" data-lucide="chevron-down"></i>
-  </div>
-
-  <div class="section-content">
-    <p>
-      <b>Minimum Hours:</b>
-      You are expected to complete <b>4 hours every week</b> on shift using Melonly.
-      You have one full week to complete this quota.
-    </p>
-
-    <p>
-      <b>Leave of Absence (LOA):</b>
-      If you are unable to meet your required hours, you must submit an LOA.
-      Valid reasons include mental or health issues, school exams, holidays,
-      and other reasonable circumstances.
-    </p>
-
-    <p>
-      <b>Promotions:</b><br>
-      • Single Promotion: <b>6 hours</b> (2 logs per hour)<br>
-      • Double Promotion: <b>14 hours</b> (2 logs per hour)<br>
-      • Triple Promotion: <b>30 hours</b> (2 logs per hour)
-    </p>
-
-    <p>
-      <b>Strike Policy:</b>
-      Receiving <b>2 or more strikes</b> during a promotion work period
-      will disqualify you from promotion eligibility for that week.
-    </p>
-
-    <p>
-      <b>Infraction Policy:</b>
-      All infractions are <b>not appealable</b> until their expiry timer has passed.
-    </p>
-
-    <p>
-      <b>Staff of the Week:</b>
-      The staff member with the <b>highest total hours</b> for the week
-      will be selected as Staff of the Week.
-    </p>
-
-    <p>
-      <b>Retiring Policy:</b>
-      Staff below the rank of <b>JA</b> will not receive the “Retired Staff” role.
-      Staff ranked <b>TIA or higher</b> are eligible for the
-      “Retired High Rank” role.
-    </p>
-
-    <p>
-      <b>Reinstatement Policy:</b>
-      Prior <b>TIA+</b> members may return as a maximum rank of
-      <b>Junior Moderator</b>.
-      Members with the “Retired Staff” role (JA+)
-      may return as <b>Trial Staff</b>.
-    </p>
-  </div>
 </div>
 
-<div class="section">
-  <div class="section-header">
-    <div class="section-header-left">
-      <i data-lucide="clipboard-list"></i>
-      Staff Outposts
-    </div>
-    <i class="chevron" data-lucide="chevron-down"></i>
-  </div>
-
-  <div class="section-content">
-
-  <p>
-    Staff Outposts are designated supervision areas used to maintain server order and monitor high-activity locations.
-    Outposts are ranked from most important (1) to least important (4). You must prioritize higher-ranked outposts first.
-  </p>
-
-  <p>
-    While stationed at an outpost, you must be actively performing moderation duties such as Discord checks,
-    voice checks, or handling nearby rule violations.
-  </p>
-
-  <p><strong>Outpost Rules:</strong></p>
-  <ul>
-    <li>A maximum of <strong>2 on-duty staff members</strong> may occupy one outpost.</li>
-    <li>You must remain in your vehicle while at an outpost.</li>
-    <li>Do not make it obvious that the location is a staff base.</li>
-    <li>You may load users only if they harass or interfere with your duties.</li>
-  </ul>
-
-  <h3 style="margin-top: 30px;">Duties While at an Outpost</h3>
-  <ol style="margin-left: 20px;">
-    <li>Monitor roleplay activity in and around your assigned area.</li>
-    <li>Conduct Discord and VC checks regularly.</li>
-    <li>Respond to nearby rule-breaking immediately.</li>
-    <li>Handle mod calls and return to your outpost afterward.</li>
-  </ol>
-
-  <h3 style="margin-top: 30px;">What You Should NOT Do</h3>
-  <ol style="margin-left: 20px;">
-    <li>Never stand idle — always be moderating or checking activity.</li>
-    <li>Never interfere with ongoing roleplay unless rules are broken.</li>
-    <li>Never assist in police chases unless moderation is required.</li>
-  </ol>
-
-  <h3 style="margin-top: 30px;">Outpost Locations</h3>
-
-  <h4>Outpost 1 – Spawn</h4>
-  <p>
-    The highest-priority outpost. Spawn experiences the most trolling, RDM, and VDM.
-    Constant supervision is required.
-  </p>
-
-  <h4>Outpost 2 – Gun Store</h4>
-  <p>
-    High RDM risk due to weapon access. Expect frequent moderation logs and incidents.
-  </p>
-
-  <h4>Outpost 3 – Mod Shop</h4>
-  <p>
-    Responsible for monitoring the nearby intersection, fire station, and bank.
-    Staff must stay alert for gunshots and fail roleplay.
-  </p>
-
-  <h4>Outpost 4 – Three Guys</h4>
-  <p>
-    Lowest activity outpost. Focus on Discord and VC checks while monitoring the city center,
-    jewelry store, and surrounding areas.
-  </p>
-
-  <p style="margin-top: 20px;">
-    Your priority at all outposts is supervision and moderation. Always remain professional,
-    active, and alert.
-  </p>
-</div>
-
-
-  </div>
+<!-- CONTACT -->
+<div id="contact" class="page">
+    <h2>Contact Us</h2>
+    <form class="contact-form">
+        <input type="text" placeholder="Your Name">
+        <input type="email" placeholder="Your Email">
+        <textarea rows="5" placeholder="Your Message"></textarea>
+        <button type="submit">Send Message</button>
+    </form>
 </div>
 
 <script>
- const images = [
-  'https://media.discordapp.net/attachments/1462173946807058616/1462174031649181938/image.png?ex=696e8caf&is=696d3b2f&hm=c19ba3569b9cbc0bc120a4db81f3ec6bc6b042d7c7b72d5c467ceaa2ace53e73&=&format=webp&quality=lossless&width=1054&height=552',
-  'https://media.discordapp.net/attachments/1456546359816753244/1456546360189784208/image.png?ex=696e82c1&is=696d3141&hm=d10f1488a1bd5f7d92b098f4b51b4b01d95560be09c21e7eb4939e8ee613e196&=&format=webp&quality=lossless&width=828&height=552',
-  'https://media.discordapp.net/attachments/1456546212726571018/1456546213150064702/image.png?ex=696e829e&is=696d311e&hm=3d284f5d956ffc5b84e6db8a0c23e9ce964a51c9da96cbc1d0d1c4237cde4c49&=&format=webp&quality=lossless&width=884&height=552',
-  'https://media.discordapp.net/attachments/1456545688837029940/1456545689201803417/image.png?ex=696e8221&is=696d30a1&hm=50d3fffc7a0a80e4c37a44b46cf1af678bd7ef06a7d224608aa0d3e8dfcbbe0d&=&format=webp&quality=lossless&width=828&height=552',
-  'https://media.discordapp.net/attachments/1462172938966011965/1462172939540500509/image.png?ex=696e8baa&is=696d3a2a&hm=f17c3b5a824182fb4b940150ba64298c26be7dff702d96674793dce81a0cab28&=&format=webp&quality=lossless&width=1318&height=512'
-];
+function switchPage(pageId){
+    document.getElementById("loader").classList.remove("hidden");
 
-let index = 0;
-const bg = document.querySelector('.bg-container');
-
-// Preload images (optional but smoother)
-images.forEach(src => {
-  const img = new Image();
-  img.src = src;
-});
-
-// Function to change background
-function changeBackground() {
-  // Fade out
-  bg.style.opacity = 0;
-
-  setTimeout(() => {
-    // Change image
-    bg.style.backgroundImage = `url('${images[index]}')`;
-
-    // Fade in
-    bg.style.opacity = 1;
-
-    // Next image
-    index = (index + 1) % images.length;
-  }, 1000); // 1000ms matches the CSS transition duration
+    setTimeout(()=>{
+        document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+        document.getElementById(pageId).classList.add("active");
+        document.getElementById("loader").classList.add("hidden");
+        window.scrollTo(0,0);
+    },400);
 }
 
-// Start slideshow
-changeBackground(); // initial
-setInterval(changeBackground, 5000); // every 5 seconds
+/* SEARCH FUNCTION */
+document.getElementById("searchInput").addEventListener("keyup", function(){
+    let filter = this.value.toLowerCase();
+    let cards = document.querySelectorAll(".product-card");
 
-
-lucide.createIcons();
-
-document.querySelectorAll('.section-header').forEach(header => {
-  header.addEventListener('click', () => {
-    header.parentElement.classList.toggle('open');
-  });
-});
-// Sidebar navigation click
-const navItems = document.querySelectorAll('.nav-item');
-const panels = document.querySelectorAll('.panel');
-
-navItems.forEach(item => {
-  item.addEventListener('click', () => {
-    // Remove active class from all nav items
-    navItems.forEach(i => i.classList.remove('active'));
-    item.classList.add('active');
-
-    // Show corresponding panel
-    if(item.textContent.includes('Staff Index')){
-      panels.forEach(p => p.style.display = 'none');
-      document.querySelector('.main > .panel:first-child').style.display = 'block';
-    } else if(item.textContent.includes('Chain of Command')){
-      panels.forEach(p => p.style.display = 'none');
-      document.getElementById('chain-panel').style.display = 'block';
-    } 
-    // Add more if needed for Analytics, Settings...
-  });
+    cards.forEach(card=>{
+        let name = card.getAttribute("data-name").toLowerCase();
+        card.style.display = name.includes(filter) ? "block" : "none";
+    });
 });
 
+/* Hide loader after first load */
+window.addEventListener("load",()=>{
+    document.getElementById("loader").classList.add("hidden");
+});
 </script>
 
 </body>
