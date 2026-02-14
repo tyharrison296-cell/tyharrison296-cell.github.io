@@ -65,8 +65,8 @@ nav{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:15px 40px;
-    backdrop-filter:blur(15px);
+    padding:13px 15px;
+    backdrop-filter:blur(10px);
     background:rgba(0,0,0,0.6);
     border-bottom:1px solid var(--glass-border);
     z-index:1000;
@@ -317,11 +317,25 @@ nav img{
     cursor:pointer;
     font-size:20px;
 }
-
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    justify-content:space-between;
+    align-items:center;
+    padding:5px;
+    opacity: 0.3;
+    z-index:1000;
+  text-align: center;
+}
+  a {
+    color: #F53527;
+  }
 </style>
 </head>
 <body>
-
+<main>
 <div class="loader" id="loader">
     <div class="loader-circle"></div>
 </div>
@@ -353,7 +367,8 @@ nav img{
 
 <!-- PRODUCTS -->
 <div id="products" class="page">
-    <h2 style="margin-bottom:20px;">Our Products</h2>
+    <h1 style="margin-bottom:5px;
+               text-align:center;">Our Products</h1>
 <a href="https://docs.google.com/document/d/1wTzUor56nrf8bcgUwClUCZu-WjbcN2KytgGn3mP57ZE/edit?usp=sharing" target="_blank" rel="noopener noreferrer"> &copy View our Purchase Policy. 3/1/2026.</a>
     <div class="search-bar">
         <input type="text" id="searchInput" placeholder="Search products...">
@@ -451,7 +466,11 @@ nav img{
     </div>
 </div>
 
-
+</main>
+  <footer>
+  <p>&copy Blueline Designs. All Right Reserved.
+  </p>
+  </footer>
 <script>
 function switchPage(pageId){
     document.getElementById("loader").classList.remove("hidden");
@@ -532,6 +551,5 @@ function goToPayment(platform){
 }
 
 </script>
-
 </body>
 </html>
