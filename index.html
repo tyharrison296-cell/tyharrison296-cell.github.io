@@ -1,1 +1,366 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Blueline Designs</title> <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"> <style> :root{ --neon-blue:#00bfff; --dark-bg:#0a0f1c; --glass-bg:rgba(255,255,255,0.05); --glass-border:rgba(255,255,255,0.1); } *{ margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif; } body{ background:linear-gradient(135deg,#050a14,#0a0f1c); color:white; overflow-x:hidden; } /* LOADER */ .loader{ position:fixed; inset:0; background:#050a14; display:flex; justify-content:center; align-items:center; z-index:9999; transition:opacity .4s ease; } .loader.hidden{ opacity:0; pointer-events:none; } .loader-circle{ width:60px; height:60px; border:4px solid rgba(255,255,255,0.1); border-top:4px solid var(--neon-blue); border-radius:50%; animation:spin 1s linear infinite; } @keyframes spin{ to{transform:rotate(360deg);} } /* NAVBAR */ nav{ position:fixed; top:0; width:100%; display:flex; justify-content:space-between; align-items:center; padding:15px 40px; backdrop-filter:blur(15px); background:rgba(0,0,0,0.6); border-bottom:1px solid var(--glass-border); z-index:1000; } nav img{ height:40px; } .nav-links{ display:flex; gap:20px; } .nav-links button{ background:transparent; border:2px solid var(--neon-blue); color:white; padding:8px 18px; border-radius:30px; cursor:pointer; transition:.3s; } .nav-links button:hover{ background:var(--neon-blue); color:#000; box-shadow:0 0 15px var(--neon-blue); } /* PAGES */ .page{ display:none; min-height:100vh; padding:120px 10% 80px; animation:fadeIn .5s ease; } .page.active{ display:block; } @keyframes fadeIn{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} } /* HERO */ .hero h1{ font-size:3rem; background:linear-gradient(90deg,#00bfff,#4da6ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; } .hero p{ margin:20px 0; max-width:500px; color:#ccc; } .cta-btn{ padding:12px 30px; border-radius:30px; border:none; background:var(--neon-blue); color:#000; font-weight:600; cursor:pointer; transition:.3s; } .cta-btn:hover{ box-shadow:0 0 25px var(--neon-blue); transform:translateY(-3px); } /* PRODUCTS */ .search-bar{ margin-bottom:30px; } .search-bar input{ width:100%; padding:12px; border-radius:30px; border:1px solid var(--glass-border); background:var(--glass-bg); color:white; } .products-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:30px; } .product-card{ background:var(--glass-bg); border:1px solid var(--glass-border); backdrop-filter:blur(15px); padding:20px; border-radius:15px; transition:.3s; } .product-card:hover{ transform:translateY(-5px); box-shadow:0 0 20px rgba(0,191,255,0.4); } .product-image{ height:150px; background:linear-gradient(135deg,#111,#1c2a45); border-radius:10px; margin-bottom:15px; display:flex; justify-content:center; align-items:center; color:#555; } .notice{ font-size:.75rem; color:#ff4d4d; margin:10px 0; } .price{ font-weight:600; margin-bottom:10px; } .buy-btn{ width:100%; padding:10px; border-radius:20px; border:2px solid var(--neon-blue); background:transparent; color:white; cursor:pointer; transition:.3s; } .buy-btn:hover{ background:var(--neon-blue); color:#000; box-shadow:0 0 15px var(--neon-blue); } /* CONTACT */ .contact-form{ max-width:600px; display:flex; flex-direction:column; gap:15px; } .contact-form input, .contact-form textarea{ padding:12px; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:10px; color:white; } .contact-form button{ padding:12px; border-radius:25px; border:none; background:var(--neon-blue); font-weight:600; cursor:pointer; } /* RESPONSIVE */ @media(max-width:768px){ nav{ flex-direction:column; gap:10px; } .hero h1{ font-size:2rem; } } </style> </head> <body> <div class="loader" id="loader"> <div class="loader-circle"></div> </div> <nav> <img src="https://cdn.discordapp.com/attachments/1389099203648553143/1471835181102010368/IMG_3589.png?ex=699060d4&is=698f0f54&hm=11d3aac3d584278e31ad32aba99a4f07d0cc3161ff340171b9c386d6a91caa4a&" alt="Blueline Logo"> <div class="nav-links"> <button onclick="switchPage('home')">Home</button> <button onclick="switchPage('products')">Products</button> <button onclick="switchPage('about')">About</button> <button onclick="switchPage('contact')">Contact</button> </div> </nav> <footer> <small> &copy; 2026 Blueline Designs. All Rights Reserved. </small> </footer> <!-- HOME --> <div id="home" class="page active hero"> <h1>Blueline Designs</h1> <p>Modern, high-quality digital designs crafted with precision and innovation.</p> <button class="cta-btn" onclick="switchPage('products')">Explore Products</button> </div> <!-- PRODUCTS --> <div id="products" class="page"> <h2 style="margin-bottom:20px;">Our Products</h2> <div class="search-bar"> <input type="text" id="searchInput" placeholder="Search products..."> </div> <div class="products-grid" id="productsGrid"> <div class="product-card" data-name="Premium Banner"> <div class="product-image">Image Placeholder</div> <h3>Premium Banner</h3> <p>Custom high-quality banner design.</p> <div class="notice">This product cannot be reproduced or resold.</div> <div class="price">$9.99</div> <a href="https://yourcheckoutlink.com" target="_blank"> <button class="buy-btn">Buy Now</button> </a> </div> <div class="product-card" data-name="Custom Livery"> <div class="product-image">Image Placeholder</div> <h3>Custom Livery</h3> <p>Futuristic vehicle livery design.</p> <div class="notice">This product cannot be reproduced or resold.</div> <div class="price">$14.99</div> <a href="https://yourcheckoutlink.com" target="_blank"> <button class="buy-btn">Buy Now</button> </a> </div> </div> </div> <!-- ABOUT --> <div id="about" class="page"> <h2>About Blueline Designs</h2> <p style="margin-top:20px; max-width:700px; color:#ccc;"> Blueline Designs specializes in futuristic, high-impact digital artwork. Every project is crafted with precision, innovation, and bold aesthetics. </p> </div> <!-- CONTACT --> <div id="contact" class="page"> <h2>Contact Us</h2> <form class="contact-form" action="https://formsubmit.co/tyharrison296@gmail.com" method="POST"> <input type="text" placeholder="Your Name"> <input type="email" placeholder="Your Email"> <textarea rows="5" placeholder="Your Message"></textarea> <button type="submit">Send Message</button> </form> </div> <script> function switchPage(pageId){ document.getElementById("loader").classList.remove("hidden"); setTimeout(()=>{ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active")); document.getElementById(pageId).classList.add("active"); document.getElementById("loader").classList.add("hidden"); window.scrollTo(0,0); },400); } /* SEARCH FUNCTION */ document.getElementById("searchInput").addEventListener("keyup", function(){ let filter = this.value.toLowerCase(); let cards = document.querySelectorAll(".product-card"); cards.forEach(card=>{ let name = card.getAttribute("data-name").toLowerCase(); card.style.display = name.includes(filter) ? "block" : "none"; }); }); /* Hide loader after first load */ window.addEventListener("load",()=>{ document.getElementById("loader").classList.add("hidden"); }); </script> </body> </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueline Designs</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --neon-blue:#00bfff;
+    --dark-bg:#0a0f1c;
+    --glass-bg:rgba(255,255,255,0.05);
+    --glass-border:rgba(255,255,255,0.1);
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins', sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#050a14,#0a0f1c);
+    color:white;
+    overflow-x:hidden;
+}
+
+/* LOADER */
+.loader{
+    position:fixed;
+    inset:0;
+    background:#050a14;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+    transition:opacity .4s ease;
+}
+
+.loader.hidden{
+    opacity:0;
+    pointer-events:none;
+}
+
+.loader-circle{
+    width:60px;
+    height:60px;
+    border:4px solid rgba(255,255,255,0.1);
+    border-top:4px solid var(--neon-blue);
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg);}
+}
+
+/* NAVBAR */
+nav{
+    position:fixed;
+    top:0;
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 40px;
+    backdrop-filter:blur(15px);
+    background:rgba(0,0,0,0.6);
+    border-bottom:1px solid var(--glass-border);
+    z-index:1000;
+}
+
+nav img{
+    height:40px;
+}
+
+.nav-links{
+    display:flex;
+    gap:20px;
+}
+
+.nav-links button{
+    background:transparent;
+    border:2px solid var(--neon-blue);
+    color:white;
+    padding:8px 18px;
+    border-radius:30px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.nav-links button:hover{
+    background:var(--neon-blue);
+    color:#000;
+    box-shadow:0 0 15px var(--neon-blue);
+}
+
+/* PAGES */
+.page{
+    display:none;
+    min-height:100vh;
+    padding:120px 10% 80px;
+    animation:fadeIn .5s ease;
+}
+
+.page.active{
+    display:block;
+}
+
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+/* HERO */
+.hero h1{
+    font-size:3rem;
+    background:linear-gradient(90deg,#00bfff,#4da6ff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.hero p{
+    margin:20px 0;
+    max-width:500px;
+    color:#ccc;
+}
+
+.cta-btn{
+    padding:12px 30px;
+    border-radius:30px;
+    border:none;
+    background:var(--neon-blue);
+    color:#000;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.cta-btn:hover{
+    box-shadow:0 0 25px var(--neon-blue);
+    transform:translateY(-3px);
+}
+
+/* PRODUCTS */
+.search-bar{
+    margin-bottom:30px;
+}
+
+.search-bar input{
+    width:100%;
+    padding:12px;
+    border-radius:30px;
+    border:1px solid var(--glass-border);
+    background:var(--glass-bg);
+    color:white;
+}
+
+.products-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:30px;
+}
+
+.product-card{
+    background:var(--glass-bg);
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(15px);
+    padding:20px;
+    border-radius:15px;
+    transition:.3s;
+}
+
+.product-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 0 20px rgba(0,191,255,0.4);
+}
+
+.product-image{
+    height:150px;
+    background:linear-gradient(135deg,#111,#1c2a45);
+    border-radius:10px;
+    margin-bottom:15px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:#555;
+}
+
+.notice{
+    font-size:.75rem;
+    color:#ff4d4d;
+    margin:10px 0;
+}
+
+.price{
+    font-weight:600;
+    margin-bottom:10px;
+}
+
+.buy-btn{
+    width:100%;
+    padding:10px;
+    border-radius:20px;
+    border:2px solid var(--neon-blue);
+    background:transparent;
+    color:white;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.buy-btn:hover{
+    background:var(--neon-blue);
+    color:#000;
+    box-shadow:0 0 15px var(--neon-blue);
+}
+
+/* CONTACT */
+.contact-form{
+    max-width:600px;
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.contact-form input,
+.contact-form textarea{
+    padding:12px;
+    background:var(--glass-bg);
+    border:1px solid var(--glass-border);
+    border-radius:10px;
+    color:white;
+}
+
+.contact-form button{
+    padding:12px;
+    border-radius:25px;
+    border:none;
+    background:var(--neon-blue);
+    font-weight:600;
+    cursor:pointer;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+    nav{
+        flex-direction:column;
+        gap:10px;
+    }
+    .hero h1{
+        font-size:2rem;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="loader" id="loader">
+    <div class="loader-circle"></div>
+</div>
+
+<nav>
+    <img src="Blueline logo with stylish blue gradient.png" alt="Blueline Logo">
+    <div class="nav-links">
+        <button onclick="switchPage('home')">Home</button>
+        <button onclick="switchPage('products')">Products</button>
+        <button onclick="switchPage('about')">About</button>
+        <button onclick="switchPage('contact')">Contact</button>
+    </div>
+</nav>
+
+<!-- HOME -->
+<div id="home" class="page active hero">
+    <h1>Blueline Designs</h1>
+    <p>Modern, high-quality digital designs crafted with precision and innovation.</p>
+    <button class="cta-btn" onclick="switchPage('products')">Explore Products</button>
+</div>
+
+<!-- PRODUCTS -->
+<div id="products" class="page">
+    <h2 style="margin-bottom:20px;">Our Products</h2>
+
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search products...">
+    </div>
+
+    <div class="products-grid" id="productsGrid">
+
+        <div class="product-card" data-name="Premium Banner">
+            <div class="product-image">Image Placeholder</div>
+            <h3>Premium Banner</h3>
+            <p>Custom high-quality banner design.</p>
+            <div class="notice">This product cannot be reproduced or resold.</div>
+            <div class="price">$9.99</div>
+            <a href="https://yourcheckoutlink.com" target="_blank">
+                <button class="buy-btn">Buy Now</button>
+            </a>
+        </div>
+
+        <div class="product-card" data-name="Custom Livery">
+            <div class="product-image">Image Placeholder</div>
+            <h3>Custom Livery</h3>
+            <p>Futuristic vehicle livery design.</p>
+            <div class="notice">This product cannot be reproduced or resold.</div>
+            <div class="price">$14.99</div>
+            <a href="https://yourcheckoutlink.com" target="_blank">
+                <button class="buy-btn">Buy Now</button>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<!-- ABOUT -->
+<div id="about" class="page">
+    <h2>About Blueline Designs</h2>
+    <p style="margin-top:20px; max-width:700px; color:#ccc;">
+        Blueline Designs specializes in futuristic, high-impact digital artwork.
+        Every project is crafted with precision, innovation, and bold aesthetics.
+    </p>
+</div>
+
+<!-- CONTACT -->
+<div id="contact" class="page">
+    <h2>Contact Us</h2>
+    <form class="contact-form">
+        <input type="text" placeholder="Your Name">
+        <input type="email" placeholder="Your Email">
+        <textarea rows="5" placeholder="Your Message"></textarea>
+        <button type="submit">Send Message</button>
+    </form>
+</div>
+
+<script>
+function switchPage(pageId){
+    document.getElementById("loader").classList.remove("hidden");
+
+    setTimeout(()=>{
+        document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+        document.getElementById(pageId).classList.add("active");
+        document.getElementById("loader").classList.add("hidden");
+        window.scrollTo(0,0);
+    },400);
+}
+
+/* SEARCH FUNCTION */
+document.getElementById("searchInput").addEventListener("keyup", function(){
+    let filter = this.value.toLowerCase();
+    let cards = document.querySelectorAll(".product-card");
+
+    cards.forEach(card=>{
+        let name = card.getAttribute("data-name").toLowerCase();
+        card.style.display = name.includes(filter) ? "block" : "none";
+    });
+});
+
+/* Hide loader after first load */
+window.addEventListener("load",()=>{
+    document.getElementById("loader").classList.add("hidden");
+});
+</script>
+
+</body>
+</html>
