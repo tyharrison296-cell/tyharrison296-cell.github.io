@@ -253,6 +253,71 @@ nav img{
         font-size:2rem;
     }
 }
+  /* PURCHASE MODAL */
+.purchase-modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.7);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.purchase-modal.active{
+    display:flex;
+}
+
+.purchase-content{
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,0.1);
+    padding:40px;
+    border-radius:20px;
+    text-align:center;
+    width:90%;
+    max-width:400px;
+    animation:fadeIn .3s ease;
+}
+
+.purchase-content h2{
+    margin-bottom:10px;
+}
+
+.payment-options{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    margin-top:25px;
+}
+
+.payment-options button{
+    background:transparent;
+    border:2px solid var(--neon-blue);
+    border-radius:15px;
+    padding:10px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.payment-options button:hover{
+    background:var(--neon-blue);
+    box-shadow:0 0 15px var(--neon-blue);
+}
+
+.payment-options img{
+    width:50px;
+    height:auto;
+}
+
+.close-btn{
+    position:absolute;
+    top:15px;
+    right:20px;
+    cursor:pointer;
+    font-size:20px;
+}
+
 </style>
 </head>
 <body>
@@ -294,9 +359,9 @@ nav img{
             <p>High-Quality Website Template, $5 extra charge for it to be pre-made.</p>
             <div class="notice">This product cannot be reproduced or resold.</div>
             <div class="price">$9.99</div>
-            <a href="https://yourcheckoutlink.com" target="_blank">
-                <button class="buy-btn">Buy Now</button>
-            </a>
+<button class="buy-btn" onclick="openPurchaseModal('website')">
+    Buy Now
+</button>
         </div>
 
         <div class="product-card" data-name="Custom Livery">
@@ -305,9 +370,9 @@ nav img{
             <p>Product Description</p>
             <div class="notice">This product cannot be reproduced or resold.</div>
             <div class="price">$0.00 No Set Price</div>
-            <a href="https://yourcheckoutlink.com" target="_blank">
-                <button class="buy-btn">Buy Now</button>
-            </a>
+<button class="buy-btn" onclick="openPurchaseModal('soon')">
+    Buy Now
+</button>
         </div>
 
     </div>
@@ -332,6 +397,35 @@ nav img{
         <button type="submit">Send Message</button>
     </form>
 </div>
+<!-- PURCHASE MODAL -->
+<div class="purchase-modal" id="purchaseModal">
+    <div class="purchase-content">
+        <span class="close-btn" onclick="closePurchaseModal()">✕</span>
+
+        <h2 id="modalProductName">Product Name</h2>
+        <p>Please select your payment platform.</p>
+
+        <div class="payment-options">
+
+            <!-- PAYPAL -->
+            <button onclick="goToPayment('paypal')">
+                <img src="https://freepngimg.com/save/13625-paypal-logo-transparent-png/1817x1266">
+            </button>
+
+            <!-- ZELLE -->
+            <button onclick="goToPayment('zelle')">
+                <img src="https://logos-world.net/wp-content/uploads/2021/02/Zelle-Symbol.png">
+            </button>
+
+            <!-- OTHER -->
+            <button onclick="goToPayment('other')">
+                <img src="https://logos-world.net/wp-content/uploads/2022/12/Stripe-Emblem.png">
+            </button>
+
+        </div>
+    </div>
+</div>
+
 
 <script>
 function switchPage(pageId){
@@ -360,6 +454,58 @@ document.getElementById("searchInput").addEventListener("keyup", function(){
 window.addEventListener("load",()=>{
     document.getElementById("loader").classList.add("hidden");
 });
+  let selectedProduct = "";
+
+function openPurchaseModal(productName){
+    selectedProduct = productName;
+    document.getElementById("modalProductName").innerText = productName;
+    document.getElementById("purchaseModal").classList.add("active");
+}
+
+function closePurchaseModal(){
+    document.getElementById("purchaseModal").classList.remove("active");
+}
+const products = {
+    website: {
+        name: "Website Templates",
+        paypal: "https://paypal.com/banner-link",
+        zelle: "https://zelle.com/banner-link",
+        other: "https://stripe.com/banner-link"
+    },
+    soon: {
+        name: "More Coming Soon...",
+        paypal: "https://paypal.com/livery-link",
+        zelle: "https://zelle.com/livery-link",
+        other: "https://stripe.com/livery-link"
+    }
+};
+
+let currentProduct = null;
+
+function openPurchaseModal(productId){
+    currentProduct = products[productId];
+
+    document.getElementById("modalProductName").innerText = currentProduct.name;
+
+    document.getElementById("purchaseModal").classList.add("active");
+}
+
+function closePurchaseModal(){
+    document.getElementById("purchaseModal").classList.remove("active");
+}
+
+function goToPayment(platform){
+    if(!currentProduct) return;
+
+    let link = currentProduct[platform];
+
+    if(link){
+        window.open(link, "_blank");
+    }
+
+    closePurchaseModal();
+}
+
 </script>
 
 </body>
