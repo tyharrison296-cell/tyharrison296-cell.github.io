@@ -332,6 +332,44 @@ footer {
   a {
     color: #F53527;
   }
+  .contact-section {
+    text-align: center;
+    padding: 80px 20px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.contact-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-top: 30px;
+}
+
+/* Button Style */
+.contact-buttons button {
+    background:transparent;
+    border:2px solid var(--neon-blue);
+    color:white;
+    padding:8px 18px;
+    border-radius:30px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+/* Image Size Control (THIS fixes your issue) */
+.contact-buttons button img {
+    max-width: 50px;
+    max-height: 50px;
+    object-fit: contain;
+}
+
+/* Hover Effect */
+.contact-buttons button:hover {
+    background:var(--neon-blue);
+    color:#000;
+    box-shadow:0 0 15px var(--neon-blue);
+}
+
 </style>
 </head>
 <body>
@@ -436,7 +474,26 @@ footer {
 <div id="contact" class="page">
     <h2>Contact Us</h2>
   <p>You can contact us on the following websites or at tyler@bluelinesdesigns.github.io</p>
+     <div class="contact-buttons">
+
+        <!-- DISCORD -->
+        <button onclick="window.open('https://discord.gg/nycrole', '_blank')">
+            <img src="https://media.discordapp.net/attachments/1402381947816378479/1472631823065682032/icons8-discord-250.png?ex=699346c2&is=6991f542&hm=6bbbd1083b0444734512064b2afef2783a217087742012c3eca36713443c3557&=&format=webp&quality=lossless">
+        </button>
+
+        <!-- TIKTOK -->
+        <button onclick="window.open('https://www.tiktok.com/@YOURUSERNAME', '_blank')">
+            <img src="https://media.discordapp.net/attachments/1402381947816378479/1472632111507968191/icons8-tiktok-64.png?ex=69934707&is=6991f587&hm=f40e13ae9dcf28315a2018c462cef15421aa51b410d9ce566306905c8efae841&=&format=webp&quality=lossless">
+        </button>
+
+        <!-- EMAIL -->
+        <button onclick="window.location.href='mailto:youremail@example.com'">
+            <img src="https://media.discordapp.net/attachments/1402381947816378479/1472631824051339305/icons8-mail-100.png?ex=699346c3&is=6991f543&hm=35ba8f34e2a33c7868094273d5e365c37a07827d81881300fed78a7095fbab18&=&format=webp&quality=lossless">
+        </button>
+
+    </div>
 </div>
+
 <!-- PURCHASE MODAL -->
 <div class="purchase-modal" id="purchaseModal">
     <div class="purchase-content">
