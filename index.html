@@ -407,7 +407,9 @@ footer {
 <div id="products" class="page">
     <h1 style="margin-bottom:5px;
                text-align:center;">Our Products</h1>
-<a href="https://docs.google.com/document/d/1wTzUor56nrf8bcgUwClUCZu-WjbcN2KytgGn3mP57ZE/edit?usp=sharing" target="_blank" rel="noopener noreferrer"> &copy Click me to view our Purchase Policy!</a>
+<button class="buy-btn" onclick="openPolicyModal()" style="margin-bottom: 15px;">
+    View Purchase Policy
+</button>
     <div class="search-bar">
         <input type="text" id="searchInput" placeholder="Search products...">
     </div>
@@ -522,6 +524,34 @@ footer {
         </div>
     </div>
 </div>
+<!-- PURCHASE POLICY MODAL -->
+<div class="purchase-modal" id="policyModal">
+    <div class="purchase-content" style="max-width:600px; text-align:left; position:relative;">
+
+        <span class="close-btn" onclick="closePolicyModal()">✕</span>
+
+        <h2>Purchase Policy</h2>
+
+        <div style="margin-top:15px; max-height:400px; overflow-y:auto; font-size:14px; line-height:1.6; color:#ccc;">
+            
+            <!-- PUT YOUR POLICY TEXT HERE -->
+            <p>
+            This is where your purchase policy will go.
+            You can write your terms, refund rules, license details,
+            and anything else you want customers to agree to.
+            </p>
+
+            <p>
+            Example:
+            - No refunds after delivery.
+            - Products cannot be resold.
+            - Licensed for personal use only.
+            </p>
+
+        </div>
+
+    </div>
+</div>
 
 </main>
   <footer>
@@ -605,6 +635,13 @@ function goToPayment(platform){
     }
 
     closePurchaseModal();
+}
+function openPolicyModal(){
+    document.getElementById("policyModal").classList.add("active");
+}
+
+function closePolicyModal(){
+    document.getElementById("policyModal").classList.remove("active");
 }
 
 </script>
