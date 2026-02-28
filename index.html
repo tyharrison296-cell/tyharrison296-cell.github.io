@@ -483,12 +483,28 @@ footer {
   <div class="discord-stats">
     <div class="discord-stat">
       <span>ONLINE</span>
-      <h3 id="discord-online">--</h3>
+      <h3>
+  <script>
+    fetch("https://discord.com/api/v10/guilds/1472762054137090325/preview")
+      .then(res => res.json())
+      .then(data => {
+        document.write(data.approximate_presence_count);
+      });
+  </script>
+</h3>
     </div>
 
     <div class="discord-stat">
       <span>TOTAL MEMBERS</span>
-      <h3 id="discord-total">--</h3>
+      <h3>
+  <script>
+    fetch("https://discord.com/api/v10/guilds/1472762054137090325/preview")
+      .then(res => res.json())
+      .then(data => {
+        document.write(data.approximate_member_count);
+      });
+  </script>
+</h3>
     </div>
   </div>
 
@@ -841,33 +857,6 @@ function closePolicyModal(){
     document.getElementById("policyModal").classList.remove("active");
 }
 
-</script>
-
-<script>
-const GUILD_ID = "1472762054137090325";
-const INVITE_LINK = "https://discord.gg/bluelinedesigns";
-
-fetch(`https://discord.com/api/v10/guilds/${GUILD_ID}/preview`)
-  .then(res => res.json())
-  .then(data => {
-
-    document.getElementById("discord-name").textContent = data.name;
-
-    document.getElementById("discord-online").textContent =
-      data.approximate_presence_count.toLocaleString();
-
-    document.getElementById("discord-total").textContent =
-      data.approximate_member_count.toLocaleString();
-
-    document.getElementById("discord-icon").src =
-      `https://cdn.discordapp.com/icons/${data.id}/${data.icon}.png?size=256`;
-
-  })
-  .catch(err => {
-    console.error("Discord fetch failed:", err);
-  });
-
-document.getElementById("discord-join").href = INVITE_LINK;
 </script>
 
 </body>
