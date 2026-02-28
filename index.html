@@ -411,6 +411,21 @@ async function fetchMemberCount() {
 fetchMemberCount();
 </script>
 
+<div id="member-count">Loading members...</div>
+
+<script>
+async function fetchMemberCount() {
+  const serverId = "1472762054137090325"; // Replace this
+  const response = await fetch(`https://discord.com/api/guilds/${serverId}/widget.json`);
+  const data = await response.json();
+
+  document.getElementById("member-count").innerText =
+    `${data.members.length} Members`;
+}
+
+fetchMemberCount();
+</script>
+
     </p>
     <p>
         Our goal is simple — deliver powerful visuals that elevate your brand, project, or community. 
