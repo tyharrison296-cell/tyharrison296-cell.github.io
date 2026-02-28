@@ -476,7 +476,7 @@ fetch(`https://discord.com/api/guilds/${serverID}/widget.json`)
   .then(res => res.json())
   .then(data => {
     document.getElementById("memberCount").innerText = data.presence_count + " Online";
-    document.getElementById("onlineCount").innerText = data.member_count + " Total Members";
+    document.getElementById("onlineCount").innerText = data.approximate_member_count + " Total Members";
   })
   .catch(err => {
     console.log("Error fetching Discord data:", err);
