@@ -464,51 +464,24 @@ footer {
 <!-- HOME -->
 <div id="home" class="page active hero">
     <h1>Blueline Designs</h1>
-
-<div class="discord-card">
-
-  <div class="discord-top">
-    <div class="discord-server">
-      <img id="discord-icon" class="discord-icon" src="" alt="Server Icon">
-      <div>
-        <h2 id="discord-name">Loading...</h2>
-      </div>
-    </div>
-
-    <a id="discord-join" class="discord-join-btn" target="_blank">
-      JOIN
-    </a>
-  </div>
-
-  <div class="discord-stats">
-    <div class="discord-stat">
-      <span>ONLINE</span>
-      <h3>
-  <script>
-    fetch("https://discord.com/api/v10/guilds/1472762054137090325/preview")
-      .then(res => res.json())
-      .then(data => {
-        document.write(data.approximate_presence_count);
-      });
-  </script>
-</h3>
-    </div>
-
-    <div class="discord-stat">
-      <span>TOTAL MEMBERS</span>
-      <h3>
-  <script>
-    fetch("https://discord.com/api/v10/guilds/1472762054137090325/preview")
-      .then(res => res.json())
-      .then(data => {
-        document.write(data.approximate_member_count);
-      });
-  </script>
-</h3>
-    </div>
-  </div>
-
+<div>
+  <h3>Total Members: <span id="memberCount">Loading...</span></h3>
+  <h3>Online Now: <span id="onlineCount">Loading...</span></h3>
 </div>
+
+<script>
+const serverID = "1472762054137090325";
+
+fetch(`https://discord.com/api/guilds/${serverID}/widget.json`)
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("memberCount").innerText = data.presence_count + " Online";
+    document.getElementById("onlineCount").innerText = data.members.length + " Visible";
+  })
+  .catch(err => {
+    console.log("Error fetching Discord data:", err);
+  });
+</script>
 
       <p>Where creativity meets precision. At Blueline Designs, we create high-quality digital designs 
         built to stand out. Every product is crafted with originality, attention to detail, and a 
