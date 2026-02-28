@@ -371,6 +371,78 @@ footer {
     box-shadow:0 0 15px var(--neon-blue);
 }
 
+.discord-card {
+  max-width: 800px;
+  margin: 60px auto;
+  padding: 40px;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 40px rgba(0, 102, 255, 0.2);
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.discord-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.discord-server {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.discord-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+}
+
+.discord-join-btn {
+  padding: 14px 30px;
+  border-radius: 15px;
+  background: rgba(88, 101, 242, 0.2);
+  border: 1px solid #5865F2;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.discord-join-btn:hover {
+  background: #5865F2;
+}
+
+.discord-stats {
+  display: flex;
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.discord-stat {
+  flex: 1;
+  padding: 40px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.05);
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.discord-stat span {
+  color: #94a3b8;
+  letter-spacing: 2px;
+  font-size: 14px;
+}
+
+.discord-stat h3 {
+  font-size: 48px;
+  margin-top: 15px;
+}
+
 </style>
 </head>
 <body>
@@ -392,39 +464,40 @@ footer {
 <!-- HOME -->
 <div id="home" class="page active hero">
     <h1>Blueline Designs</h1>
+
+<div class="discord-card">
+
+  <div class="discord-top">
+    <div class="discord-server">
+      <img id="discord-icon" class="discord-icon" src="" alt="Server Icon">
+      <div>
+        <h2 id="discord-name">Loading...</h2>
+      </div>
+    </div>
+
+    <a id="discord-join" class="discord-join-btn" target="_blank">
+      JOIN
+    </a>
+  </div>
+
+  <div class="discord-stats">
+    <div class="discord-stat">
+      <span>ONLINE</span>
+      <h3 id="discord-online">--</h3>
+    </div>
+
+    <div class="discord-stat">
+      <span>TOTAL MEMBERS</span>
+      <h3 id="discord-total">--</h3>
+    </div>
+  </div>
+
+</div>
+
       <p>Where creativity meets precision. At Blueline Designs, we create high-quality digital designs 
         built to stand out. Every product is crafted with originality, attention to detail, and a 
         commitment to professionalism.
 
-<div id="member-count">Loading members...</div>
-
-<script>
-async function fetchMemberCount() {
-  const serverId = "1472762054137090325"; // Replace this
-  const response = await fetch(`https://discord.com/api/guilds/${serverId}/widget.json`);
-  const data = await response.json();
-
-  document.getElementById("member-count").innerText =
-    `${data.presence_count} Members Online`;
-}
-
-fetchMemberCount();
-</script>
-
-<div id="member-count">Loading members...</div>
-
-<script>
-async function fetchMemberCount() {
-  const serverId = "1472762054137090325"; // Replace this
-  const response = await fetch(`https://discord.com/api/guilds/${serverId}/widget.json`);
-  const data = await response.json();
-
-  document.getElementById("member-count").innerText =
-    `${data.members.length} Members`;
-}
-
-fetchMemberCount();
-</script>
 
     </p>
     <p>
@@ -769,5 +842,33 @@ function closePolicyModal(){
 }
 
 </script>
+
+<script>
+const GUILD_ID = "1472762054137090325";
+const INVITE_LINK = "https://discord.gg/bluelinedesigns";
+
+fetch(`https://discord.com/api/v10/guilds/${GUILD_ID}/preview`)
+  .then(res => res.json())
+  .then(data => {
+
+    document.getElementById("discord-name").textContent = data.name;
+
+    document.getElementById("discord-online").textContent =
+      data.approximate_presence_count.toLocaleString();
+
+    document.getElementById("discord-total").textContent =
+      data.approximate_member_count.toLocaleString();
+
+    document.getElementById("discord-icon").src =
+      `https://cdn.discordapp.com/icons/${data.id}/${data.icon}.png?size=256`;
+
+  })
+  .catch(err => {
+    console.error("Discord fetch failed:", err);
+  });
+
+document.getElementById("discord-join").href = INVITE_LINK;
+</script>
+
 </body>
 </html>
