@@ -1,835 +1,326 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="icon" type="image/png" href="https://bluelinetrd.com/assets/logo-CfirA2kj.svg">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blueline Designs</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<title>Blueline Design's</title>
+<link rel="icon" type="image/png" href="https://i.postimg.cc/zGSPqYzZ/Blueline-Official-Logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
 :root{
-    --neon-blue:#0C61CF;
-    --dark-bg:#0a0f1c;
-    --glass-bg:rgba(255,255,255,0.05);
-    --glass-border:rgba(255,255,255,0.1);
+  --bg:#05060a;
+  --accent:#2b7bff;
+  --text:#e8edf2;
+  --muted:#9aa4af;
 }
 
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Poppins', sans-serif;
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
 body{
-    background:linear-gradient(135deg,#050a14,#0a0f1c);
-    color:white;
-    overflow-x:hidden;
+  font-family:Inter;
+  background:#05060a;
+  color:var(--text);
+  overflow-x:hidden; /* prevent sideways scroll */
+  overflow-y:auto;   /* allow vertical scroll */
+  cursor:none;
 }
 
-/* LOADER */
-.loader{
-    position:fixed;
-    inset:0;
-    background:#050a14;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
-    transition:opacity .4s ease;
+/* ===== Animated Background ===== */
+#bgCanvas{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
 }
 
-.loader.hidden{
-    opacity:0;
-    pointer-events:none;
+/* ===== Custom Cursor ===== */
+.cursor{
+  position:fixed;
+  width:34px;
+  height:34px;
+  pointer-events:none;
+  z-index:9999;
+  transform:translate(-15%, -15%);
+  transition:transform .05s ease;
+  filter:
+    drop-shadow(0 0 8px rgba(43,123,255,.9))
+    drop-shadow(0 0 18px rgba(43,123,255,.7))
+    drop-shadow(0 0 30px rgba(43,123,255,.5));
 }
 
-.loader-circle{
-    width:60px;
-    height:60px;
-    border:4px solid rgba(255,255,255,0.1);
-    border-top:4px solid var(--neon-blue);
-    border-radius:50%;
-    animation:spin 1s linear infinite;
+.cursor img{
+  width:100%;
+  height:100%;
 }
 
-@keyframes spin{
-    to{transform:rotate(360deg);}
+/* ===== Navbar ===== */
+header{
+  position:fixed;
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:30px 10%;
+  z-index:5;
 }
 
-/* NAVBAR */
-nav{
-    position:fixed;
-    top:0;
-    width:100%;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:13px 15px;
-    backdrop-filter:blur(10px);
-    background:rgba(0,0,0,0.6);
-    border-bottom:1px solid var(--glass-border);
-    z-index:1000;
+.logo{
+  font-family:Poppins;
+  font-weight:800;
+  font-size:20px;
 }
 
-nav img{
-    height:40px;
+.logo span{
+  color:var(--accent);
 }
 
-.nav-links{
-    display:flex;
-    gap:20px;
+nav a{
+  color:var(--muted);
+  text-decoration:none;
+  margin-left:25px;
+  font-weight:600;
+  transition:.3s;
+  cursor:none;
 }
 
-.nav-links button{
-    background:transparent;
-    border:2px solid var(--neon-blue);
-    color:white;
-    padding:8px 18px;
-    border-radius:30px;
-    cursor:pointer;
-    transition:.3s;
+nav a:hover{
+  color:white;
 }
 
-.nav-links button:hover{
-    background:var(--neon-blue);
-    color:#000;
-    box-shadow:0 0 15px var(--neon-blue);
-}
-
-/* PAGES */
+/* ===== Page System ===== */
 .page{
-    display:none;
-    min-height:100vh;
-    padding:120px 10% 80px;
-    animation:fadeIn .5s ease;
+  position:absolute;
+  inset:0;
+  padding:140px 10% 80px; /* top space for navbar */
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start; /* start at top instead of center */
+  opacity:0;
+  transform:translateX(50px);
+  transition:.6s cubic-bezier(.2,.8,.2,1);
+  pointer-events:none;
+  z-index:2;
 }
 
 .page.active{
-    display:block;
+  opacity:1;
+  transform:translateX(0);
+  pointer-events:auto;
 }
 
-@keyframes fadeIn{
-    from{opacity:0; transform:translateY(10px);}
-    to{opacity:1; transform:translateY(0);}
+h1{
+  font-family:Poppins;
+  font-size:90px;
+  line-height:.9;
 }
 
-/* HERO */
-.hero h1{
-    font-size:3rem;
-    background:linear-gradient(90deg,#00bfff,#4da6ff);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
+h1 span{
+  color:var(--accent);
 }
 
-.hero p{
-    margin:20px 0;
-    max-width:500px;
-    color:#ccc;
+p{
+  margin-top:20px;
+  max-width:600px;
+  color:var(--muted);
+}
+  .service-card{
+  position:relative;
+  width:100%;
+  max-width:520px;
+  padding:40px;
+  border-radius:28px;
+  background:linear-gradient(145deg,#0a0f1c,#071427);
+  border:1px solid rgba(43,123,255,.25);
+  box-shadow:
+    0 0 0 1px rgba(43,123,255,.05),
+    0 20px 60px rgba(0,0,0,.6),
+    inset 0 0 80px rgba(43,123,255,.06);
+  transition:all .35s ease;
+  overflow:hidden;
+
+  /* 🔒 Prevent layout breaking */
+  box-sizing:border-box;
+  word-wrap:break-word;
+  overflow-wrap:break-word;
 }
 
-.cta-btn{
-    padding:12px 30px;
-    border-radius:30px;
-    border:none;
-    background:var(--neon-blue);
-    color:#000;
-    font-weight:600;
-    cursor:pointer;
-    transition:.3s;
+.service-card:hover{
+  transform:translateY(-10px);
+  border:1px solid rgba(43,123,255,.6);
+  box-shadow:
+    0 0 30px rgba(43,123,255,.4),
+    0 30px 80px rgba(0,0,0,.7),
+    inset 0 0 100px rgba(43,123,255,.15);
 }
 
-.cta-btn:hover{
-    box-shadow:0 0 25px var(--neon-blue);
-    transform:translateY(-3px);
+.service-icon{
+  width:48px;
+  max-width:100%;
+  height:auto;
+  margin-bottom:25px;
 }
 
-/* PRODUCTS */
-.search-bar{
-    margin-bottom:30px;
+.service-title{
+  font-size:clamp(20px, 3vw, 28px);
+  font-weight:600;
+  margin-bottom:15px;
+  color:#ffffff;
+  word-break:break-word;
 }
 
-.search-bar input{
-    width:100%;
-    padding:12px;
-    border-radius:30px;
-    border:1px solid var(--glass-border);
-    background:var(--glass-bg);
-    color:white;
+.service-desc{
+  font-size:clamp(14px, 2vw, 16px);
+  line-height:1.6;
+  color:#9aa4b2;
+  word-break:break-word;
 }
-
-.products-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:30px;
-}
-
-.product-card{
-    background:var(--glass-bg);
-    border:1px solid var(--glass-border);
-    backdrop-filter:blur(15px);
-    padding:20px;
-    border-radius:15px;
-    transition:.3s;
-}
-
-.product-card:hover{
-    transform:translateY(-5px);
-    box-shadow:0 0 20px rgba(0,191,255,0.4);
-}
-
-.product-image{
-    height:150px;
-    background:linear-gradient(135deg,#111,#1c2a45);
-    border-radius:10px;
-    margin-bottom:15px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    color:#555;
-}
-
-.notice{
-    font-size:.75rem;
-    color:#ff4d4d;
-    margin:10px 0;
-}
-
-.price{
-    font-weight:600;
-    margin-bottom:10px;
-}
-
-.buy-btn{
-    width:100%;
-    padding:10px;
-    border-radius:20px;
-    border:2px solid var(--neon-blue);
-    background:transparent;
-    color:white;
-    cursor:pointer;
-    transition:.3s;
-}
-
-.buy-btn:hover{
-    background:var(--neon-blue);
-    color:#000;
-    box-shadow:0 0 15px var(--neon-blue);
-}
-
-/* CONTACT */
-.contact-form{
-    max-width:600px;
-    display:flex;
-    flex-direction:column;
-    gap:15px;
-}
-
-.contact-form input,
-.contact-form textarea{
-    padding:12px;
-    background:var(--glass-bg);
-    border:1px solid var(--glass-border);
-    border-radius:10px;
-    color:white;
-}
-
-.contact-form button{
-    padding:12px;
-    border-radius:25px;
-    border:none;
-    background:var(--neon-blue);
-    font-weight:600;
-    cursor:pointer;
-}
-
-/* RESPONSIVE */
-@media(max-width:768px){
-    nav{
-        flex-direction:column;
-        gap:10px;
-    }
-    .hero h1{
-        font-size:2rem;
-    }
-}
-  /* PURCHASE MODAL */
-.purchase-modal{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.7);
-    display:none;
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
-}
-
-.purchase-modal.active{
-    display:flex;
-}
-
-.purchase-content{
-    background:rgba(255,255,255,0.05);
-    backdrop-filter:blur(20px);
-    border:1px solid rgba(255,255,255,0.1);
-    padding:40px;
-    border-radius:20px;
-    text-align:center;
-    width:90%;
-    max-width:400px;
-    animation:fadeIn .3s ease;
-}
-
-.purchase-content h2{
-    margin-bottom:10px;
-}
-
-.payment-options{
-    display:flex;
-    justify-content:center;
-    gap:20px;
-    margin-top:25px;
-}
-
-.payment-options button{
-    background:transparent;
-    border:2px solid var(--neon-blue);
-    border-radius:15px;
-    padding:10px;
-    cursor:pointer;
-    transition:.3s;
-}
-
-.payment-options button:hover{
-    background:var(--neon-blue);
-    box-shadow:0 0 15px var(--neon-blue);
-}
-
-.payment-options img{
-    width:50px;
-    height:auto;
-}
-
-.close-btn{
-    position:absolute;
-    top:15px;
-    right:20px;
-    cursor:pointer;
-    font-size:20px;
-}
-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    justify-content:space-between;
-    align-items:center;
-    padding:5px;
-    opacity: 0.3;
-    z-index:1000;
-  text-align: center;
-}
-  a {
-    color: #F53527;
+  @media(max-width:500px){
+  .service-card{
+    padding:25px;
   }
-  .contact-section {
-    text-align: center;
-    padding: 80px 20px;
-    font-family: 'Poppins', sans-serif;
 }
-
-.contact-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 25px;
-    margin-top: 30px;
+  .card-container{
+  display:flex;
+  flex-wrap:wrap;
+  gap:30px;
+  justify-content:center;
 }
-
-/* Button Style */
-.contact-buttons button {
-    background:transparent;
-    border:2px solid var(--neon-blue);
-    color:white;
-    padding:8px 18px;
-    border-radius:30px;
-    cursor:pointer;
-    transition:.3s;
-}
-
-/* Image Size Control (THIS fixes your issue) */
-.contact-buttons button img {
-    max-width: 50px;
-    max-height: 50px;
-    object-fit: contain;
-}
-
-/* Hover Effect */
-.contact-buttons button:hover {
-    background:var(--neon-blue);
-    color:#000;
-    box-shadow:0 0 15px var(--neon-blue);
-}
-
-.discord-card {
-  max-width: 800px;
-  margin: 60px auto;
-  padding: 40px;
-  border-radius: 25px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 40px rgba(0, 102, 255, 0.2);
-  color: white;
-  font-family: Arial, sans-serif;
-}
-
-.discord-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.discord-server {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.discord-icon {
-  width: 80px;
-  height: 80px;
-  border-radius: 20px;
-}
-
-.discord-join-btn {
-  padding: 14px 30px;
-  border-radius: 15px;
-  background: rgba(88, 101, 242, 0.2);
-  border: 1px solid #5865F2;
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-  transition: 0.3s;
-}
-
-.discord-join-btn:hover {
-  background: #5865F2;
-}
-
-.discord-stats {
-  display: flex;
-  gap: 30px;
-  margin-top: 40px;
-}
-
-.discord-stat {
-  flex: 1;
-  padding: 40px;
-  border-radius: 20px;
-  background: rgba(255,255,255,0.05);
-  text-align: center;
-  border: 1px solid rgba(255,255,255,0.08);
-}
-
-.discord-stat span {
-  color: #94a3b8;
-  letter-spacing: 2px;
-  font-size: 14px;
-}
-
-.discord-stat h3 {
-  font-size: 48px;
-  margin-top: 15px;
-}
-
 </style>
 </head>
 <body>
-<main>
-<div class="loader" id="loader">
-    <div class="loader-circle"></div>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="cursor" id="cursor">
+  <img id="cursorImg" src="https://i.postimg.cc/QNRzbtB0/icons8-mouse-cursor-96.png' border='0' alt='icons8-mouse-cursor-96">
 </div>
 
-<nav>
-    <img src="https://media.discordapp.net/attachments/1389099203648553143/1471835181102010368/IMG_3589.png?ex=6991b254&is=699060d4&hm=32629416ae2c2b90ef3df1e9e35fae8c9e04ef9efc1819b559af318c2137e24d&=&format=webp&quality=lossless">
-    <div class="nav-links">
-        <button onclick="switchPage('home')">Home</button>
-        <button onclick="switchPage('products')">Products</button>
-        <button onclick="switchPage('about')">About</button>
-        <button onclick="switchPage('contact')">Contact</button>
-    </div>
-</nav>
+<header>
+  <div class="logo"><span>BLUE</span>LINE</div>
+  <nav>
+    <a data-page="home">Home</a>
+    <a data-page="work">Work</a>
+    <a data-page="courses">Courses</a>
+    <a data-page="home" href="https://discord.gg/invite/TSkgcUUQjE" target="_blank">Discord</a>
+    <a data-page="contact">Contact</a>
+  </nav>
+</header>
 
-<!-- HOME -->
-<div id="home" class="page active hero">
-    <h1>Blueline Designs</h1>
-<div>
-  <h3>Total Members: <span id="memberCount">Loading...</span></h3>
-  <h3>Online Now: <span id="onlineCount">Loading...</span></h3>
+<section class="page active" id="home">
+  <h1>Bringing your <span>vision</span> to life.</h1>
+  <p>High-fidelity visuals, UI systems, and automation crafted for modern communities.</p>
+<div class="card-container" style="margin-top: 10px;">
+  <div class="service-card">
+  <img src="your-icon.png" class="service-icon">
+
+  <div class="service-title">
+    Graphics
+  </div>
+
+  <div class="service-desc">
+    High-fidelity visual design tailored for your brand identity.
+  </div>
 </div>
+</div>
+</section>
+
+<section class="page" id="work">
+  <h1>Professional <span>Work</span></h1>
+  <p>Graphics, liveries, advanced ELS systems and precision digital builds.</p>
+</section>
+
+<section class="page" id="courses">
+  <h1>Courses & <span>Workshops</span></h1>
+  <p>Learn lighting systems, UI motion, automation and advanced workflows.</p>
+</section>
+
+<section class="page" id="contact">
+  <h1>Get In <span>Touch</span></h1>
+  <p>Let’s build something powerful together.</p>
+</section>
 
 <script>
-const serverID = "1472762054137090325";
+/* ===== Cursor Movement ===== */
+const cursor=document.getElementById("cursor");
+const cursorImg=document.getElementById("cursorImg");
 
-fetch(`https://discord.com/api/guilds/${serverID}/widget.json`)
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById("memberCount").innerText = data.presence_count + " Online";
-    document.getElementById("onlineCount").innerText = data.approximate_member_count + " Total Members";
-  })
-  .catch(err => {
-    console.log("Error fetching Discord data:", err);
+document.addEventListener("mousemove",e=>{
+  cursor.style.left=e.clientX+"px";
+  cursor.style.top=e.clientY+"px";
+});
+
+/* Swap to hand on hover */
+document.querySelectorAll("a, button").forEach(el=>{
+  el.addEventListener("mouseenter",()=>{
+    cursorImg.src="https://i.postimg.cc/28s04XKT/icons8-hand-cursor-90.png";
   });
-</script>
-
-      <p>Where creativity meets precision. At Blueline Designs, we create high-quality digital designs 
-        built to stand out. Every product is crafted with originality, attention to detail, and a 
-        commitment to professionalism.
-
-
-    </p>
-    <p>
-        Our goal is simple — deliver powerful visuals that elevate your brand, project, or community. 
-        Each purchase grants licensed usage while protecting the integrity of our work. 
-        Fast delivery. Clean designs. No shortcuts.
-    </p>
-    <button class="cta-btn" onclick="switchPage('products')">Explore Products</button>
-</div>
-
-<!-- PRODUCTS -->
-<div id="products" class="page">
-    <h1 style="margin-bottom:5px;
-               text-align:center;">Our Products</h1>
-<button class="buy-btn" onclick="openPolicyModal()" style="margin-bottom: 15px;">
-    View Purchase Policy
-</button>
-    <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Search products...">
-    </div>
-
-    <div class="products-grid" id="productsGrid">
-
-        <div class="product-card" data-name="Website Template">
-            <div class="product-image"></div>
-            <h3>Website Template</h3>
-            <p>High-Quality Website Template, $5 extra charge for it to be pre-made.</p>
-            <div class="notice">This product cannot be reproduced or resold.</div>
-            <div class="price">$9.99</div>
-<button class="buy-btn" onclick="openPurchaseModal('website')">
-    Buy Now
-</button>
-        </div>
-
-        <div class="product-card" data-name="More Coming Soon">
-            <div class="product-image"></div>
-            <h3>More Coming Soon!</h3>
-            <p>Product Description</p>
-            <div class="notice">This product cannot be reproduced or resold.</div>
-            <div class="price">$0.00 No Set Price</div>
-<button class="buy-btn" onclick="openPurchaseModal('soon')">
-    Buy Now
-</button>
-        </div>
-
-    </div>
-</div>
-
-<!-- ABOUT -->
-<div id="about" class="page">
-    <h2>About Blueline Designs</h2>
-    <p>
-        Blueline Designs was founded with a simple vision: create high-quality digital designs 
-        that combine precision, creativity, and professionalism. We believe strong visuals are 
-        more than just graphics — they represent identity, branding, and reputation. 
-        Every design we produce is built with intention, structure, and attention to detail 
-        to ensure it stands out and delivers real impact.
-    </p>
-    <p>
-        Our focus is on delivering clean, modern, and reliable digital products that customers 
-        can confidently use for their projects, communities, and brands. We take pride in originality. 
-        Each design is created carefully to maintain uniqueness and value, which is why we strictly 
-        protect our work from reproduction or resale. When you purchase from Blueline Designs, 
-        you are investing in quality and integrity.
-    </p>
-    <p>
-        We are committed to maintaining high standards across every product we release. 
-        From concept to final delivery, we prioritize clarity, consistency, and professional presentation. 
-        No shortcuts. No low-effort templates. Just well-crafted digital designs built to last.
-    </p>
-    <p>
-        Blueline Designs continues to grow with one core principle in mind: provide dependable 
-        digital solutions while protecting both our creativity and our customers’ investments. 
-        We appreciate every supporter who chooses to work with us and trust our brand.
-    </p>
-
-    <p><strong>Precision. Professionalism. Purpose.</strong></p>
-</div>
-
-<!-- CONTACT -->
-<div id="contact" class="page">
-    <h2>Contact Us</h2>
-  <p>You can contact us on the following websites or at tyler@bluelinesdesigns.github.io</p>
-     <div class="contact-buttons">
-
-        <!-- DISCORD -->
-        <button onclick="window.open('https://discord.gg/kMZuyRUBgy', '_blank')">
-            <img src="https://media.discordapp.net/attachments/1402381947816378479/1472631823065682032/icons8-discord-250.png?ex=699346c2&is=6991f542&hm=6bbbd1083b0444734512064b2afef2783a217087742012c3eca36713443c3557&=&format=webp&quality=lossless">
-        </button>
-
-        <!-- TIKTOK -->
-        <button onclick="window.open('https://www.tiktok.com/@YOURUSERNAME', '_blank')">
-            <img src="https://media.discordapp.net/attachments/1402381947816378479/1472632111507968191/icons8-tiktok-64.png?ex=69934707&is=6991f587&hm=f40e13ae9dcf28315a2018c462cef15421aa51b410d9ce566306905c8efae841&=&format=webp&quality=lossless">
-        </button>
-
-        <!-- EMAIL -->
-        <button onclick="window.location.href='mailto:youremail@example.com'">
-            <img src="https://media.discordapp.net/attachments/1402381947816378479/1472631824051339305/icons8-mail-100.png?ex=699346c3&is=6991f543&hm=35ba8f34e2a33c7868094273d5e365c37a07827d81881300fed78a7095fbab18&=&format=webp&quality=lossless">
-        </button>
-
-    </div>
-</div>
-
-<!-- PURCHASE MODAL -->
-<div class="purchase-modal" id="purchaseModal">
-    <div class="purchase-content">
-        <span class="close-btn" onclick="closePurchaseModal()">✕</span>
-
-        <h2 id="modalProductName">Product Name</h2>
-        <p>Please select your payment platform.</p>
-
-        <div class="payment-options">
-
-            <!-- PAYPAL -->
-            <button onclick="goToPayment('paypal')">
-                <img src="https://freepngimg.com/save/13625-paypal-logo-transparent-png/1817x1266">
-            </button>
-
-            <!-- ZELLE -->
-            <button onclick="goToPayment('zelle')">
-                <img src="https://logos-world.net/wp-content/uploads/2021/02/Zelle-Symbol.png">
-            </button>
-
-            <!-- OTHER -->
-            <button onclick="goToPayment('other')">
-                <img src="https://logos-world.net/wp-content/uploads/2022/12/Stripe-Emblem.png">
-            </button>
-
-        </div>
-    </div>
-</div>
-<!-- PURCHASE POLICY MODAL -->
-<div class="purchase-modal" id="policyModal">
-    <div class="purchase-content" style="max-width:600px; text-align:left; position:relative;">
-
-        <span class="close-btn" onclick="closePolicyModal()">✕</span>
-
-        <h2>Purchase Policy</h2>
-
-        <div style="margin-top:15px; max-height:400px; overflow-y:auto; font-size:14px; line-height:1.6; color:#ccc;">
-            
-            <!-- PUT YOUR POLICY TEXT HERE -->
-         <h1>Blueline Designs – Purchase Policy</h1>
-
-<p><strong>Effective Date:</strong> 3/1/2026</p>
-
-<p>
-Thank you for choosing Blueline Designs. By purchasing, downloading, or using any product 
-from Blueline Designs, you agree to the following terms and conditions outlined in this Purchase Policy.
-</p>
-
-<h2>1. Digital Product Agreement</h2>
-
-<p>
-All products sold by Blueline Designs are digital goods unless otherwise stated. Upon purchase, 
-you are granted a limited, non-exclusive, non-transferable license to use the purchased item 
-for personal or approved project use only.
-</p>
-
-<p>
-You do not own the rights to resell, redistribute, reproduce, copy, duplicate, modify for resale, 
-share, or claim the design as your own.
-</p>
-
-<h2>2. No Reproduction or Resale</h2>
-
-<p>Strictly prohibited actions include but are not limited to:</p>
-
-<ul>
-<li>Reselling any Blueline Designs product in its original or modified form</li>
-<li>Reproducing designs for redistribution</li>
-<li>Sharing files publicly or privately with individuals who did not purchase</li>
-<li>Uploading products to marketplaces, websites, or file-sharing platforms</li>
-<li>Claiming ownership or authorship of any design</li>
-</ul>
-
-<p>
-Any unauthorized reproduction or resale of Blueline Designs products is a direct violation 
-of this agreement and may result in account suspension, revocation of license, 
-or further legal action where applicable.
-</p>
-
-<h2>3. No Refund Policy</h2>
-
-<p>
-Due to the nature of digital products, all sales are final.
-</p>
-
-<p>
-Once a product has been delivered, downloaded, or accessed, it is not eligible for refund, 
-return, or exchange under any circumstances. By completing your purchase, you acknowledge 
-and agree to this no-refund policy.
-</p>
-
-<p>
-Please ensure you review product descriptions carefully before purchasing.
-</p>
-
-<h2>4. Responsibility and Use</h2>
-
-<p>Blueline Designs is not responsible for:</p>
-
-<ul>
-<li>How purchased items are used after delivery</li>
-<li>Misuse, modification, or improper implementation of products</li>
-<li>Platform bans, restrictions, or penalties resulting from misuse</li>
-<li>Any damages, losses, or consequences resulting from your actions</li>
-</ul>
-
-<p>
-You assume full responsibility for how you choose to use any purchased product.
-</p>
-
-<p>
-Blueline Designs is not liable for any irresponsible, unlawful, or inappropriate 
-use of its products by customers.
-</p>
-
-<h2>5. Intellectual Property Rights</h2>
-
-<p>
-All designs, graphics, logos, digital assets, and content sold by Blueline Designs 
-remain the intellectual property of Blueline Designs unless explicitly stated otherwise in writing.
-</p>
-
-<p>
-Purchasing a product does not transfer copyright ownership.
-</p>
-
-<h2>6. Violation of Terms</h2>
-
-<p>If any of the terms listed in this Purchase Policy are violated, Blueline Designs reserves the right to:</p>
-
-<ul>
-<li>Revoke access to purchased products</li>
-<li>Deny future service</li>
-<li>Take appropriate action to protect intellectual property</li>
-</ul>
-
-<h2>7. Agreement to Terms</h2>
-
-<p>
-By completing a purchase from Blueline Designs, you confirm that you have read, understood, 
-and agreed to this Purchase Policy in full.
-</p>
-
-
-        </div>
-
-    </div>
-</div>
-
-</main>
-  <footer>
-  <p>&copy Blueline Designs. All Rights Reserved.
-  </p>
-  </footer>
-<script>
-function switchPage(pageId){
-    document.getElementById("loader").classList.remove("hidden");
-
-    setTimeout(()=>{
-        document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-        document.getElementById(pageId).classList.add("active");
-        document.getElementById("loader").classList.add("hidden");
-        window.scrollTo(0,0);
-    },400);
-}
-
-/* SEARCH FUNCTION */
-document.getElementById("searchInput").addEventListener("keyup", function(){
-    let filter = this.value.toLowerCase();
-    let cards = document.querySelectorAll(".product-card");
-
-    cards.forEach(card=>{
-        let name = card.getAttribute("data-name").toLowerCase();
-        card.style.display = name.includes(filter) ? "block" : "none";
-    });
+  el.addEventListener("mouseleave",()=>{
+    cursorImg.src="https://i.postimg.cc/QNRzbtB0/icons8-mouse-cursor-96.png";
+  });
 });
 
-/* Hide loader after first load */
-window.addEventListener("load",()=>{
-    document.getElementById("loader").classList.add("hidden");
+/* ===== Page Switching ===== */
+const pages=document.querySelectorAll(".page");
+
+document.querySelectorAll("nav a").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    pages.forEach(p=>p.classList.remove("active"));
+    document.getElementById(btn.dataset.page).classList.add("active");
+  });
 });
-  let selectedProduct = "";
 
-function openPurchaseModal(productName){
-    selectedProduct = productName;
-    document.getElementById("modalProductName").innerText = productName;
-    document.getElementById("purchaseModal").classList.add("active");
+/* ===== Particle Background ===== */
+const canvas=document.getElementById("bgCanvas");
+const ctx=canvas.getContext("2d");
+
+let w,h;
+
+function resize(){
+  w=canvas.width=window.innerWidth;
+  h=canvas.height=window.innerHeight;
+}
+resize();
+window.addEventListener("resize",resize);
+
+let particles=[];
+
+for(let i=0;i<70;i++){
+  particles.push({
+    x:Math.random()*w,
+    y:Math.random()*h,
+    r:Math.random()*2+0.5,
+    dx:(Math.random()-.5)*0.3,
+    dy:(Math.random()-.5)*0.3
+  });
 }
 
-function closePurchaseModal(){
-    document.getElementById("purchaseModal").classList.remove("active");
-}
-const products = {
-    website: {
-        name: "Website Templates",
-        paypal: "https://www.paypal.com/instantcommerce/checkout/AQA3EBUB2NGSW",
-        zelle: "https://zelle.com/banner-link",
-        other: "https://stripe.com/banner-link"
-    },
-    soon: {
-        name: "More Coming Soon...",
-        paypal: "https://paypal.com/livery-link",
-        zelle: "https://zelle.com/livery-link",
-        other: "https://stripe.com/livery-link"
-    }
-};
+function animate(){
+  ctx.clearRect(0,0,w,h);
 
-let currentProduct = null;
+  particles.forEach(p=>{
+    p.x+=p.dx;
+    p.y+=p.dy;
 
-function openPurchaseModal(productId){
-    currentProduct = products[productId];
+    if(p.x<0||p.x>w)p.dx*=-1;
+    if(p.y<0||p.y>h)p.dy*=-1;
 
-    document.getElementById("modalProductName").innerText = currentProduct.name;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle="rgba(43,123,255,.85)";
+    ctx.shadowColor="rgba(43,123,255,.85)";
+    ctx.shadowBlur=15;
+    ctx.fill();
+  });
 
-    document.getElementById("purchaseModal").classList.add("active");
+  requestAnimationFrame(animate);
 }
 
-function closePurchaseModal(){
-    document.getElementById("purchaseModal").classList.remove("active");
-}
-
-function goToPayment(platform){
-    if(!currentProduct) return;
-
-    let link = currentProduct[platform];
-
-    if(link){
-        window.open(link, "_blank");
-    }
-
-    closePurchaseModal();
-}
-function openPolicyModal(){
-    document.getElementById("policyModal").classList.add("active");
-}
-
-function closePolicyModal(){
-    document.getElementById("policyModal").classList.remove("active");
-}
-
+animate();
 </script>
 
 </body>
