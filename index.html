@@ -19,12 +19,14 @@
   --border:rgba(255,255,255,.08);
   --shadow:0 20px 60px rgba(0,0,0,.45);
   --navbg:rgba(5,6,10,.72);
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --page-speed:.48s;
 }
 
 html[data-theme="light"]{
   --bg:#f6f8fb;
   --bg2:#eef3f9;
-  --card:rgba(255,255,255,.75);
+  --card:rgba(255,255,255,.78);
   --text:#101828;
   --muted:#5b6472;
   --accent:#2563eb;
@@ -72,7 +74,7 @@ header{
   top:0;
   left:0;
   width:100%;
-  z-index:20;
+  z-index:30;
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -110,13 +112,32 @@ nav a{
   text-decoration:none;
   font-weight:600;
   font-size:15px;
-  transition:.25s ease;
+  transition:color .25s ease, transform .25s ease, opacity .25s ease;
   cursor:pointer;
+  position:relative;
+}
+
+nav a::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-6px;
+  width:100%;
+  height:2px;
+  border-radius:999px;
+  background:var(--accent);
+  transform:scaleX(0);
+  transform-origin:center;
+  transition:transform .28s var(--ease);
 }
 
 nav a:hover,
 nav a.active{
   color:var(--text);
+}
+
+nav a.active::after{
+  transform:scaleX(1);
 }
 
 /* ===== Theme Button ===== */
@@ -130,7 +151,7 @@ nav a.active{
   font-size:14px;
   cursor:pointer;
   box-shadow:var(--shadow);
-  transition:.25s ease;
+  transition:transform .22s ease, opacity .22s ease, background .25s ease;
 }
 
 .theme-btn:hover{
@@ -164,21 +185,46 @@ nav a.active{
 main{
   position:relative;
   z-index:2;
+  min-height:100vh;
+  overflow:hidden;
 }
 
 .page{
+  position:absolute;
+  inset:0;
   min-height:100vh;
   padding:120px clamp(18px, 4vw, 8%) 70px;
-  display:none;
+  display:flex;
   opacity:0;
-  transform:translateY(10px);
-  transition:opacity .35s ease, transform .35s ease;
+  transform:translateY(18px) scale(.985);
+  pointer-events:none;
+  visibility:hidden;
+  transition:
+    opacity var(--page-speed) var(--ease),
+    transform var(--page-speed) var(--ease),
+    visibility 0s linear var(--page-speed);
 }
 
 .page.active{
-  display:flex;
   opacity:1;
-  transform:translateY(0);
+  transform:translateY(0) scale(1);
+  pointer-events:auto;
+  visibility:visible;
+  transition:
+    opacity var(--page-speed) var(--ease),
+    transform var(--page-speed) var(--ease),
+    visibility 0s;
+}
+
+.page.leaving{
+  opacity:0;
+  transform:translateY(-10px) scale(.985);
+  pointer-events:none;
+  visibility:visible;
+  transition:
+    opacity var(--page-speed) var(--ease),
+    transform var(--page-speed) var(--ease),
+    visibility 0s;
 }
 
 .page-inner{
@@ -227,7 +273,7 @@ p{
   border:1px solid var(--border);
   box-shadow:var(--shadow);
   backdrop-filter:blur(18px);
-  transition:transform .25s ease, border-color .25s ease;
+  transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease;
 }
 
 .service-card:hover{
@@ -249,6 +295,22 @@ p{
 }
 
 /* ===== Mobile Nav ===== */
+.nav-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.18);
+  backdrop-filter:blur(2px);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s ease;
+  z-index:15;
+}
+
+.nav-backdrop.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
 @media (max-width: 768px){
   .menu-toggle{
     display:flex;
@@ -271,13 +333,18 @@ p{
     overflow:hidden;
     opacity:0;
     pointer-events:none;
-    transition:max-height .35s ease, opacity .2s ease;
+    transform:translateY(-8px);
+    transition:
+      max-height .38s var(--ease),
+      opacity .22s ease,
+      transform .38s var(--ease);
   }
 
   nav.active{
-    max-height:340px;
+    max-height:360px;
     opacity:1;
     pointer-events:auto;
+    transform:translateY(0);
     padding-bottom:18px;
   }
 
@@ -285,10 +352,15 @@ p{
     padding:12px 14px;
     border-radius:14px;
     background:rgba(255,255,255,.03);
+    transform:translateX(-4px);
   }
 
   html[data-theme="light"] nav a{
     background:rgba(16,24,40,.04);
+  }
+
+  nav.active a{
+    transform:translateX(0);
   }
 
   .theme-btn{
@@ -319,6 +391,7 @@ p{
 </head>
 <body>
 
+<div class="nav-backdrop" id="navBackdrop"></div>
 <canvas id="bgCanvas"></canvas>
 
 <header>
@@ -370,7 +443,7 @@ p{
   <section class="page" id="work">
     <div class="page-inner">
       <h1>Professional <span>Work</span></h1>
-      <p>Graphics, liveries, advanced ELS systems, and precision digital builds.</p>
+      <p>Graphics, liveries, advanced systems, and precision digital builds.</p>
 
       <div class="card-container">
         <div class="service-card">
@@ -432,11 +505,7 @@ function setTheme(theme) {
 }
 
 const savedTheme = localStorage.getItem("blueline-theme");
-if (savedTheme) {
-  setTheme(savedTheme);
-} else {
-  setTheme("dark");
-}
+setTheme(savedTheme || "dark");
 
 themeToggle.addEventListener("click", () => {
   const current = root.getAttribute("data-theme");
@@ -446,40 +515,80 @@ themeToggle.addEventListener("click", () => {
 /* ===== Mobile Menu ===== */
 const menuToggle = document.getElementById("menuToggle");
 const navMenu = document.getElementById("navMenu");
+const navBackdrop = document.getElementById("navBackdrop");
+
+function openMenu(open) {
+  navMenu.classList.toggle("active", open);
+  navBackdrop.classList.toggle("show", open);
+  menuToggle.setAttribute("aria-expanded", open ? "true" : "false");
+}
 
 menuToggle.addEventListener("click", () => {
-  const isOpen = navMenu.classList.toggle("active");
-  menuToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  openMenu(!navMenu.classList.contains("active"));
 });
 
-/* ===== Page Switching ===== */
-const pages = document.querySelectorAll(".page");
-const navLinks = document.querySelectorAll("nav a[data-page]");
+navBackdrop.addEventListener("click", () => openMenu(false));
 
-function showPage(pageId) {
-  pages.forEach(page => {
-    page.classList.toggle("active", page.id === pageId);
-  });
+/* ===== Page Switching with smooth transition ===== */
+const pages = [...document.querySelectorAll(".page")];
+const navLinks = [...document.querySelectorAll("nav a[data-page]")];
+let currentPageId = document.querySelector(".page.active")?.id || "home";
+let pageTimer = null;
 
+function updateNav(pageId) {
   navLinks.forEach(link => {
     link.classList.toggle("active", link.dataset.page === pageId);
   });
 }
 
+function switchPage(pageId, pushHistory = true) {
+  const nextPage = document.getElementById(pageId);
+  const currentPage = document.getElementById(currentPageId);
+
+  if (!nextPage || pageId === currentPageId) {
+    openMenu(false);
+    return;
+  }
+
+  clearTimeout(pageTimer);
+
+  if (currentPage) {
+    currentPage.classList.remove("active");
+    currentPage.classList.add("leaving");
+  }
+
+  nextPage.classList.remove("leaving");
+  nextPage.classList.add("active");
+
+  currentPageId = pageId;
+  updateNav(pageId);
+  openMenu(false);
+
+  pageTimer = setTimeout(() => {
+    pages.forEach(page => {
+      if (page.id !== currentPageId) page.classList.remove("leaving");
+    });
+  }, 520);
+
+  if (pushHistory) {
+    history.pushState({ page: pageId }, "", `#${pageId}`);
+  }
+}
+
 navLinks.forEach(link => {
   link.addEventListener("click", (e) => {
     e.preventDefault();
-    const pageId = link.dataset.page;
-    showPage(pageId);
-
-    navMenu.classList.remove("active");
-    menuToggle.setAttribute("aria-expanded", "false");
-    history.replaceState(null, "", `#${pageId}`);
+    switchPage(link.dataset.page, true);
   });
 });
 
-const startPage = location.hash.replace("#", "") || "home";
-showPage(document.getElementById(startPage) ? startPage : "home");
+window.addEventListener("popstate", () => {
+  const hash = location.hash.replace("#", "") || "home";
+  switchPage(document.getElementById(hash) ? hash : "home", false);
+});
+
+const initialHash = location.hash.replace("#", "");
+switchPage(document.getElementById(initialHash) ? initialHash : "home", false);
 
 /* ===== Background Particles ===== */
 const canvas = document.getElementById("bgCanvas");
